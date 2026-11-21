@@ -1,0 +1,62 @@
+name: Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Installa le dipendenze
+        run: npm ci
+
+      - name: Compila la web app
+        run: npm run build
+        env:
+          VITE_PUBLIC_URL: ${{ vars.PUBLIC_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+          VITE_CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+
+      - name: Copia la web app nel progetto Android
+        run: npx cap sync android
+
+      - name: Compila l'APK (debug, installabile direttamente sul telefono)
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Rinomina l'APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk viaggi-di-gruppo-${{ github.run_number }}.apk
+
+      - name: Allega l'APK all'esecuzione
+        uses: actions/upload-artifact@v4
+        with:
+          name: viaggi-di-gruppo-apk
+          path: viaggi-di-gruppo-${{ github.run_number }}.apk
+
+      - name: Pubblica l'APK nella pagina Releases (link scaricabile dal telefono)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Build ${{ github.run_number }}
+          prerelease: true
+          files: viaggi-di-gruppo-${{ github.run_number }}.apk
+          body: |
+            APK di prova (firmato in modalità debug). Sul telefono Android: scarica il file, aprilo e consenti l'installazione da questa fonte.
