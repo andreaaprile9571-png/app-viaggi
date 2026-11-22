@@ -10,7 +10,7 @@ import { fxRate, whatsappLink } from '../../lib/integrations';
 import { useTrip } from '../../lib/TripContext';
 import { supabase } from '../../lib/supabase';
 
-const COLORS = ['#6D28D9', '#1D4ED8', '#C2410C', '#0E6B58', '#B45309', '#BE185D', '#0369A1'];
+const COLORS = ['#6D28D9', '#1D4ED8', '#9C4426', '#2F5D50', '#B45309', '#BE185D', '#0369A1'];
 export const APP_URL = (import.meta.env.VITE_PUBLIC_URL as string) || (window.location.origin + import.meta.env.BASE_URL).replace(/\/$/, '');
 
 export default function Group() {
@@ -23,7 +23,7 @@ export default function Group() {
   const link = `${APP_URL}/j/${b.trip.invite_code}`;
   const isOrg = b.me?.role === 'organizer';
 
-  useEffect(() => { QRCode.toDataURL(link, { margin: 1, width: 240, color: { dark: '#0F1B2D' } }).then(setQr); }, [link]);
+  useEffect(() => { QRCode.toDataURL(link, { margin: 1, width: 240, color: { dark: '#22302A' } }).then(setQr); }, [link]);
 
   async function addGuest(e: React.FormEvent) {
     e.preventDefault();

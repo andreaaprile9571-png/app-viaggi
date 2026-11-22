@@ -42,9 +42,9 @@ export default function Expenses() {
 
       <section className="dark-card">
         <div className="between" style={{ alignItems: 'flex-start' }}>
-          <div className="col"><span className="small" style={{ color: '#B7C0CC' }}>{t('Totale del gruppo')}</span>
+          <div className="col"><span className="small" style={{ color: '#B5AC98' }}>{t('Totale del gruppo')}</span>
             <span className="display" style={{ fontSize: 30 }}>{money(total, cur)}</span></div>
-          <div className="col" style={{ alignItems: 'flex-end' }}><span className="small" style={{ color: '#B7C0CC' }}>{t('La tua quota')}</span>
+          <div className="col" style={{ alignItems: 'flex-end' }}><span className="small" style={{ color: '#B5AC98' }}>{t('La tua quota')}</span>
             <span style={{ fontSize: 18, fontWeight: 600, paddingTop: 6 }}>{money(myShare, cur)}</span></div>
         </div>
         <Link to="saldi" className="between" style={{ minHeight: 48, padding: '0 14px', borderRadius: 14, background: '#fff', color: 'var(--ink)', textDecoration: 'none' }}>
@@ -53,7 +53,7 @@ export default function Expenses() {
         </Link>
         <div className="row">
           <span className="col grow"><label htmlFor="simp" className="small strong">{t('Semplifica le spese')}</label>
-            <span className="tiny" style={{ color: '#B7C0CC' }}>{simplify ? `Calcolo automatico: ${nTransfers} pagamenti per pareggiare` : `Disattivo: ${nTransfers} rimborsi, uno per ogni debito`}</span></span>
+            <span className="tiny" style={{ color: '#B5AC98' }}>{simplify ? `Calcolo automatico: ${nTransfers} pagamenti per pareggiare` : `Disattivo: ${nTransfers} rimborsi, uno per ogni debito`}</span></span>
           <Switch id="simp" checked={simplify} onChange={setSimplify} />
         </div>
       </section>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Icon, Sheet } from '../components/ui';
+import { Avatar, Icon, Logo, Sheet } from '../components/ui';
 import { loadTrips } from '../lib/api';
 import { daysUntil, range } from '../lib/format';
 import { t } from '../lib/i18n';
@@ -30,7 +30,8 @@ export default function Trips({ name }: { name: string }) {
     <div className="screen no-tabs">
       <header className="between">
         <div className="col" style={{ gap: 2 }}>
-          <p className="muted small">{t('Ciao')} {name}</p>
+          <Logo size={26} withName />
+          <p className="muted small" style={{ marginTop: 10 }}>{t('Ciao')} {name}</p>
           <h1 className="display" style={{ fontSize: 32 }}>{t('I tuoi viaggi')}</h1>
         </div>
         <Link to="/impostazioni" className="icon-btn" aria-label={t('Impostazioni')}><Icon name="settings" /></Link>

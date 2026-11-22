@@ -5,7 +5,7 @@ import { getLang, t } from '../lib/i18n';
 import { searchPlaces, type Place } from '../lib/integrations';
 import { supabase } from '../lib/supabase';
 
-const COLORS = ['#0E6B58', '#1D4ED8', '#6D28D9', '#C2410C', '#0F1B2D', '#BE185D'];
+const COLORS = ['#2F5D50', '#1D4ED8', '#6D28D9', '#9C4426', '#22302A', '#BE185D'];
 
 export default function NewTripForm({ name }: { name: string }) {
   const nav = useNavigate();

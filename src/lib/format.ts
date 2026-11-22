@@ -38,20 +38,20 @@ export const relTime = (d: string) => {
 export const DOC_CATEGORIES: { id: DocCategory; label: string; bg: string; fg: string }[] = [
   { id: 'voli', label: 'Voli', bg: '#E0E9FF', fg: '#1D4ED8' },
   { id: 'alloggi', label: 'Alloggi', bg: '#EEE7FD', fg: '#6D28D9' },
-  { id: 'trasporti', label: 'Trasporti', bg: '#E3F1ED', fg: '#0E6B58' },
-  { id: 'attivita', label: 'Attività', bg: '#FDEBDD', fg: '#C2410C' },
-  { id: 'assicurazione', label: 'Assicurazione', bg: '#E9ECF0', fg: '#3D4756' },
-  { id: 'personali', label: 'Documenti personali', bg: '#E9ECF0', fg: '#3D4756' },
-  { id: 'altro', label: 'Altro', bg: '#E9ECF0', fg: '#3D4756' },
+  { id: 'trasporti', label: 'Trasporti', bg: '#DCE7DE', fg: '#2F5D50' },
+  { id: 'attivita', label: 'Attività', bg: '#F3DDD2', fg: '#9C4426' },
+  { id: 'assicurazione', label: 'Assicurazione', bg: '#E6E0D2', fg: '#45503F' },
+  { id: 'personali', label: 'Documenti personali', bg: '#E6E0D2', fg: '#45503F' },
+  { id: 'altro', label: 'Altro', bg: '#E6E0D2', fg: '#45503F' },
 ];
 
 export const EXPENSE_CATEGORIES: { id: ExpenseCategory; label: string; bg: string; fg: string }[] = [
-  { id: 'cibo', label: 'Cibo', bg: '#FDEBDD', fg: '#9A3412' },
+  { id: 'cibo', label: 'Cibo', bg: '#F3DDD2', fg: '#7E3416' },
   { id: 'alloggio', label: 'Alloggio', bg: '#E0E9FF', fg: '#1D4ED8' },
-  { id: 'trasporti', label: 'Trasporti', bg: '#E3F1ED', fg: '#0E6B58' },
+  { id: 'trasporti', label: 'Trasporti', bg: '#DCE7DE', fg: '#2F5D50' },
   { id: 'attivita', label: 'Attività', bg: '#EEE7FD', fg: '#6D28D9' },
   { id: 'spesa', label: 'Spesa', bg: '#FEF3C7', fg: '#92400E' },
-  { id: 'altro', label: 'Altro', bg: '#E9ECF0', fg: '#3D4756' },
+  { id: 'altro', label: 'Altro', bg: '#E6E0D2', fg: '#45503F' },
 ];
 
 export const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF', 'JPY', 'CZK', 'DKK', 'HUF', 'NOK', 'PLN', 'SEK', 'RON', 'TRY', 'AUD', 'CAD', 'CNY', 'HKD', 'INR', 'MXN', 'BRL', 'THB', 'ZAR', 'ISK', 'SGD', 'KRW', 'NZD', 'IDR', 'ILS', 'PHP', 'MYR'];

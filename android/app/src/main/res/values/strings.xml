@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Viaggi di gruppo</string>
-    <string name="title_activity_main">Viaggi di gruppo</string>
+    <string name="app_name">Shipshape</string>
+    <string name="title_activity_main">Shipshape</string>
     <string name="package_name">app.viaggidigruppo.android</string>
     <string name="custom_url_scheme">app.viaggidigruppo.android</string>
 </resources>

@@ -50,7 +50,7 @@ export default function Balances() {
               <span className="ellipsis" style={{ width: 70 }}>{m.display_name}</span>
               <span className="grow row" style={{ gap: 0, height: 10 }} aria-hidden="true">
                 <span className="grow" style={{ display: 'flex', justifyContent: 'flex-end' }}>{v < 0 && <span className="bar-neg" style={{ width: `${(-v / max) * 100}%` }} />}</span>
-                <span style={{ width: 2, height: 16, background: '#C9D0D8' }} />
+                <span style={{ width: 2, height: 16, background: '#C8BFAC' }} />
                 <span className="grow" style={{ display: 'flex' }}>{v > 0 && <span className="bar-pos" style={{ width: `${(v / max) * 100}%` }} />}</span>
               </span>
               <span className="col" style={{ alignItems: 'flex-end', width: 92 }}>

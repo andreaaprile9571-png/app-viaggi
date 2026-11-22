@@ -105,7 +105,7 @@ export default function Overview() {
             const m = b.members.find((x) => x.id === a.member_id);
             return (
               <li key={a.id}>
-                {m ? <Avatar m={m} /> : <span className="avatar" style={{ background: '#C9D0D8' }}>?</span>}
+                {m ? <Avatar m={m} /> : <span className="avatar" style={{ background: '#C8BFAC' }}>?</span>}
                 <span className="grow small"><strong>{memberName(a.member_id)}</strong> {a.text}</span>
                 <span className="tiny muted">{relTime(a.created_at)}</span>
               </li>

@@ -136,3 +136,22 @@ export function OfflineBanner({ stale, queued }: { stale: boolean; queued: numbe
 export const DOC_ICON: Record<string, IconName> = {
   voli: 'plane', alloggi: 'bed', trasporti: 'train', attivita: 'ticket', assicurazione: 'shield', personali: 'id', altro: 'folder',
 };
+
+/** Marchio Shipshape: due vele sopra uno scafo a "=" (il gruppo che torna pari). */
+export function Logo({ size = 28, sail = 'var(--teal)', jib = 'var(--orange)', withName = false }: { size?: number; sail?: string; jib?: string; withName?: boolean }) {
+  const mark = (
+    <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M33 5 L33 38 L55 38 Z" fill={sail} />
+      <path d="M29 13 L29 38 L9 38 Z" fill={jib} />
+      <rect x="8" y="44" width="48" height="6.5" rx="3.25" fill={sail} />
+      <rect x="8" y="54" width="48" height="6.5" rx="3.25" fill={sail} />
+    </svg>
+  );
+  if (!withName) return mark;
+  return (
+    <span className="row" style={{ gap: 8 }}>
+      {mark}
+      <span className="display" style={{ fontSize: Math.round(size * 0.8), color: 'var(--ink)' }}>Shipshape</span>
+    </span>
+  );
+}

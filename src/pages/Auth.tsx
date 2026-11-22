@@ -1,3 +1,4 @@
+import { Logo } from '../components/ui';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { t } from '../lib/i18n';
@@ -48,7 +49,7 @@ export default function Auth() {
   return (
     <div className="screen no-tabs" style={{ justifyContent: 'center' }}>
       <div className="col" style={{ gap: 6 }}>
-        <span className="pill teal" style={{ alignSelf: 'flex-start' }}>Viaggi di gruppo</span>
+        <span style={{ marginBottom: 10 }}><Logo size={34} withName /></span>
         <h1 className="display" style={{ fontSize: 34 }}>Documenti e spese del viaggio, in un posto solo.</h1>
         <p className="muted">Biglietti per ognuno, anche offline. Uno scontrino diventa una spesa già divisa.</p>
       </div>
