@@ -7,8 +7,9 @@ android {
         applicationId "app.evenkeel.android"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        // numero della compilazione GitHub: ogni APK è più nuovo del precedente e si installa sopra
+        versionCode((System.getenv("GITHUB_RUN_NUMBER") ?: "1") as Integer)
+        versionName "1.0." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,7 +17,21 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    // Firma fissa per gli APK di prova: senza, ogni compilazione avrebbe una firma diversa
+    // e Android non permetterebbe di aggiornare l'app sopra la versione precedente.
+    // Solo per i test: per il Play Store serve una chiave di rilascio privata, fuori dal repository.
+    signingConfigs {
+        debug {
+            storeFile file('evenkeel-debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
