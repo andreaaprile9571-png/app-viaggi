@@ -27,6 +27,8 @@ export default function Overview() {
   const myBal = me ? balances[me.id] ?? 0 : 0;
   const tripDays = wx.filter((d) => (!trip.start_date || d.date >= trip.start_date) && (!trip.end_date || d.date <= trip.end_date));
   const days = tripDays.length ? tripDays : wx.slice(0, 7);
+  const openItems = b.lists.filter((i) => !i.done).length;
+  const listsLabel = b.lists.length ? `${openItems} ${t('da fare')}` : t('Bagagli e cose da fare');
   const cat = next ? DOC_CATEGORIES.find((c) => c.id === next.category)! : null;
 
   return (
@@ -73,6 +75,17 @@ export default function Overview() {
         </Link>
       </div>
 
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 }}>
+        <Link to="itinerario" className="linkcard" style={{ padding: 14 }}>
+          <span className="icon-tile" style={{ width: 40, height: 40, background: 'var(--teal-soft)', color: 'var(--teal)' }}><Icon name="route" size={20} /></span>
+          <span className="col" style={{ minWidth: 0 }}><span className="small strong">{t('Itinerario')}</span><span className="tiny muted">{t('Giorno per giorno')}</span></span>
+        </Link>
+        <Link to="liste" className="linkcard" style={{ padding: 14 }}>
+          <span className="icon-tile" style={{ width: 40, height: 40, background: 'var(--orange-soft)', color: 'var(--orange-dark)' }}><Icon name="list" size={20} /></span>
+          <span className="col" style={{ minWidth: 0 }}><span className="small strong">{t('Liste')}</span><span className="tiny muted">{listsLabel}</span></span>
+        </Link>
+      </div>
+
       {days.length > 0 && (
         <section className="stack">
           <h2 className="eyebrow">{t('Meteo a destinazione')}</h2>
@@ -81,7 +94,7 @@ export default function Overview() {
               <div key={d.date}><span className="muted">{dateShort(d.date)}</span><Icon name={w.icon as 'sun'} size={22} label={w.text} /><span className="strong">{d.max}°</span><span className="muted">{d.min}°</span></div>
             ); })}
           </div>
-          <p className="tiny muted">Previsioni Open-Meteo, disponibili fino a 16 giorni prima.</p>
+          <p className="tiny muted">{t('Previsioni Open-Meteo, disponibili fino a 16 giorni prima.')}</p>
         </section>
       )}
 

@@ -5,7 +5,7 @@ import type { Member } from '../lib/supabase';
 
 type IconName = 'home' | 'doc' | 'receipt' | 'users' | 'plane' | 'bed' | 'train' | 'ticket' | 'shield' | 'id' | 'plus' | 'back' | 'close'
   | 'chevron' | 'search' | 'camera' | 'cloud-check' | 'lock' | 'copy' | 'share' | 'download' | 'check' | 'more' | 'calendar' | 'map'
-  | 'sun' | 'cloud' | 'cloud-sun' | 'rain' | 'snow' | 'storm' | 'settings' | 'upload' | 'trash' | 'user-plus' | 'wallet' | 'folder' | 'mountain';
+  | 'sun' | 'cloud' | 'cloud-sun' | 'rain' | 'snow' | 'storm' | 'settings' | 'upload' | 'trash' | 'user-plus' | 'wallet' | 'folder' | 'mountain' | 'list' | 'chart' | 'route';
 
 const P: Record<IconName, ReactNode> = {
   home: <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" />,
@@ -34,6 +34,9 @@ const P: Record<IconName, ReactNode> = {
   more: <><circle cx="5" cy="12" r="1" /><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /></>,
   calendar: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></>,
   map: <><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z" /><path d="M9 4v14M15 6v14" /></>,
+  list: <><path d="M9 6h11M9 12h11M9 18h11" /><path d="m3.5 6 1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17" /></>,
+  chart: <><path d="M4 20V10M10 20V4M16 20v-7M21 20H3" /></>,
+  route: <><circle cx="6" cy="18" r="2.5" /><circle cx="18" cy="6" r="2.5" /><path d="M8.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5" /></>,
   sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5" /></>,
   cloud: <path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4 4 0 0 1-1 8.5z" />,
   'cloud-sun': <><path d="M8 19a4 4 0 0 1-.5-8A5 5 0 0 1 17 11a3.5 3.5 0 0 1-1 8z" /><path d="M15 3v1.5M20.5 5.5l-1 1M22 11h-1.5" /></>,

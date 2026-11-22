@@ -17,6 +17,9 @@ import Documents from './pages/trip/Documents';
 import ExpenseForm from './pages/trip/ExpenseForm';
 import Expenses from './pages/trip/Expenses';
 import Group from './pages/trip/Group';
+import Itinerary from './pages/trip/Itinerary';
+import Lists from './pages/trip/Lists';
+import Stats from './pages/trip/Stats';
 import Overview from './pages/trip/Overview';
 
 export default function App() {
@@ -63,6 +66,9 @@ export default function App() {
               <Route path="spese" element={<Expenses />} />
               <Route path="spese/nuova" element={<ExpenseForm />} />
               <Route path="spese/saldi" element={<Balances />} />
+              <Route path="spese/statistiche" element={<Stats />} />
+              <Route path="itinerario" element={<Itinerary />} />
+              <Route path="liste" element={<Lists />} />
               <Route path="gruppo" element={<Group />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

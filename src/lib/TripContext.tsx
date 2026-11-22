@@ -44,9 +44,10 @@ export function TripProvider({ children }: { children?: ReactNode }) {
     let timer: ReturnType<typeof setTimeout>;
     const later = () => { clearTimeout(timer); timer = setTimeout(refresh, 400); };
     const ch = supabase.channel(`trip-${tripId}`);
-    for (const table of ['expenses', 'documents', 'members', 'settlements', 'activity']) {
+    for (const table of ['expenses', 'documents', 'members', 'settlements', 'activity', 'list_items']) {
       ch.on('postgres_changes', { event: '*', schema: 'public', table, filter: `trip_id=eq.${tripId}` }, later);
     }
+    ch.on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'trips', filter: `id=eq.${tripId}` }, later);
     ch.subscribe();
     const online = () => refresh();
     window.addEventListener('online', online);
