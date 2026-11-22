@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">Evenkeel</string>
     <string name="title_activity_main">Evenkeel</string>
-    <string name="package_name">app.viaggidigruppo.android</string>
-    <string name="custom_url_scheme">app.viaggidigruppo.android</string>
+    <string name="package_name">app.evenkeel.android</string>
+    <string name="custom_url_scheme">app.evenkeel.android</string>
 </resources>

@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.viaggidigruppo.android',
+  appId: 'app.evenkeel.android',
   appName: 'Evenkeel',
   webDir: 'dist',
   android: { allowMixedContent: false },

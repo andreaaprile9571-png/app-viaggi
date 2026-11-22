@@ -1,4 +1,4 @@
-package app.viaggidigruppo.android;
+package app.evenkeel.android;
 
 import com.getcapacitor.BridgeActivity;
 
