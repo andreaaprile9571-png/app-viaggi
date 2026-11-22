@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { Avatar, Icon, Sheet, TabBar, toast } from '../../components/ui';
 import { splitEqual } from '../../lib/balances';
-import { money, uid } from '../../lib/format';
+import { money, uid, errorText } from '../../lib/format';
 import { t } from '../../lib/i18n';
 import { parseImport, type ImportedExpense } from '../../lib/importexport';
 import { fxRate, whatsappLink } from '../../lib/integrations';
@@ -86,7 +86,7 @@ export default function Group() {
       }
       toast(`Importate ${importing.expenses.length} spese`);
       setImporting(null); refresh();
-    } catch (e) { toast(e instanceof Error ? e.message : String(e)); }
+    } catch (e) { toast(errorText(e)); }
     finally { setBusy(false); }
   }
 

@@ -1,4 +1,5 @@
 import { Logo } from '../components/ui';
+import { errorText } from '../lib/format';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { t } from '../lib/i18n';
@@ -33,7 +34,7 @@ export default function Auth() {
         if (error) throw error;
       }
     } catch (e) {
-      const m = e instanceof Error ? e.message : String(e);
+      const m = errorText(e);
       setErr(/invalid login/i.test(m) ? 'Email o password non corretti.' : /already registered/i.test(m) ? 'Questa email ha già un account: accedi.' : m);
     } finally { setBusy(false); }
   }

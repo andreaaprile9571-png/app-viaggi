@@ -91,11 +91,17 @@ export function TabBar() {
   );
 }
 
+// Quante finestre sono aperte: la pagina sotto resta ferma finché ce n'è almeno una.
+let openSheets = 0;
+function lockScroll(on: boolean) {
+  openSheets = Math.max(0, openSheets + (on ? 1 : -1));
+  document.documentElement.classList.toggle('sheet-open', openSheets > 0);
+}
+
 export function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = prev; };
+    lockScroll(true);
+    return () => lockScroll(false);
   }, []);
   return (
     <div className="sheet-backdrop" onClick={onClose}>

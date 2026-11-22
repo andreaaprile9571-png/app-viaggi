@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Icon, toast } from '../../components/ui';
 import { fileUrl, saveExpense } from '../../lib/api';
 import { splitEqual, splitWeights } from '../../lib/balances';
-import { CURRENCIES, EXPENSE_CATEGORIES, money, uid } from '../../lib/format';
+import { CURRENCIES, EXPENSE_CATEGORIES, money, uid, errorText } from '../../lib/format';
 import { t } from '../../lib/i18n';
 import { fxRate } from '../../lib/integrations';
 import { readReceipt, shrinkImage } from '../../lib/ocr';
@@ -89,7 +89,7 @@ export default function ExpenseForm() {
       toast(res.queued ? 'Spesa salvata sul telefono: la invio appena torni online' : 'Spesa salvata');
       await refresh();
       nav('..', { relative: 'path' });
-    } catch (e) { setErr(e instanceof Error ? e.message : String(e)); }
+    } catch (e) { setErr(errorText(e)); }
     finally { setBusy(false); }
   }
 
@@ -103,7 +103,7 @@ export default function ExpenseForm() {
   const name = (id: string) => (id === b.me?.id ? 'Io' : b.members.find((m) => m.id === id)?.display_name ?? '');
 
   return (
-    <div className="screen no-tabs" style={{ background: '#fff' }}>
+    <div className="screen no-tabs">
       <header className="between">
         <Link to=".." relative="path" className="icon-btn" aria-label={t('Chiudi')}><Icon name="close" size={20} /></Link>
         <h1 style={{ fontSize: 17, fontWeight: 600 }}>{editing ? 'Modifica spesa' : t('Nuova spesa')}</h1>
@@ -112,7 +112,7 @@ export default function ExpenseForm() {
 
       <section className="row" style={{ padding: 12, background: 'var(--bg)', borderRadius: 18, alignItems: 'flex-start' }}>
         {receiptPreview ? <img src={receiptPreview} alt="Scontrino" className="receipt-thumb" />
-          : <span className="receipt-thumb" style={{ background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}><Icon name="receipt" size={30} /></span>}
+          : <span className="receipt-thumb" style={{ background: 'var(--card)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}><Icon name="receipt" size={30} /></span>}
         <div className="col grow" style={{ gap: 8 }}>
           {ocr && !ocr.done && <><span className="small">{t('Sto leggendo lo scontrino…')}</span><div className="progress"><div style={{ width: `${Math.round(ocr.progress * 100)}%` }} /></div></>}
           {ocr?.done && <span className="pill teal" style={{ alignSelf: 'flex-start' }}><Icon name="check" size={13} />{t('Letto dallo scontrino')}: controlla i dati</span>}
@@ -133,9 +133,9 @@ export default function ExpenseForm() {
       </div>
       <div className="field"><label htmlFor="e-title">Descrizione</label>
         <input id="e-title" className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="es. Cena ad Alfama" maxLength={160} /></div>
-      <div className="row">
-        <div className="field grow"><label htmlFor="e-day">Data</label><input id="e-day" className="input" type="date" value={day} onChange={(e) => setDay(e.target.value)} /></div>
-        <div className="field grow"><label htmlFor="e-cat">{t('Categoria')}</label>
+      <div className="pair">
+        <div className="field"><label htmlFor="e-day">Data</label><input id="e-day" className="input" type="date" value={day} onChange={(e) => setDay(e.target.value)} /></div>
+        <div className="field"><label htmlFor="e-cat">{t('Categoria')}</label>
           <select id="e-cat" className="input" value={category} onChange={(e) => setCategory(e.target.value as ExpenseCategory)}>
             {EXPENSE_CATEGORIES.map((c) => <option key={c.id} value={c.id}>{t(c.label)}</option>)}</select></div>
       </div>
@@ -172,7 +172,7 @@ export default function ExpenseForm() {
       </div>
       {err && <p className="error">{err}</p>}
 
-      <div className="bottom-bar" style={{ background: 'linear-gradient(to top, #fff 70%, rgba(255,255,255,0))' }}>
+      <div className="bottom-bar">
         <button className="btn btn-primary btn-block" onClick={save} disabled={busy || !amount || !included.length || !sumOk}>{busy ? 'Salvataggio…' : t('Salva spesa')}</button>
       </div>
     </div>

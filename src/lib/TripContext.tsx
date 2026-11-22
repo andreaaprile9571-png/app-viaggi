@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { errorText } from './format';
 import { Outlet, useParams } from 'react-router-dom';
 import { flushQueue, loadTripBundle, prefetchDocuments, queuedExpenses } from './api';
 import { netBalances } from './balances';
@@ -31,7 +32,7 @@ export function TripProvider({ children }: { children?: ReactNode }) {
       setQueued((await queuedExpenses(tripId)).length);
       if (bundle.fetchedAt > 0) prefetchDocuments(bundle);
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(errorText(e));
     }
   }, [tripId]);
 

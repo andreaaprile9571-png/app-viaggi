@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, Icon, Logo, Sheet } from '../components/ui';
 import { loadTrips } from '../lib/api';
-import { daysUntil, range } from '../lib/format';
+import { daysUntil, errorText, range } from '../lib/format';
 import { t } from '../lib/i18n';
 import type { Member, Trip } from '../lib/supabase';
 import NewTripForm from './NewTrip';
@@ -14,7 +14,7 @@ export default function Trips({ name }: { name: string }) {
   const [code, setCode] = useState('');
   const nav = useNavigate();
 
-  useEffect(() => { loadTrips().then(setData).catch((e) => setErr(String(e?.message ?? e))); }, []);
+  useEffect(() => { loadTrips().then(setData).catch((e) => setErr(errorText(e))); }, []);
 
   const groups = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);

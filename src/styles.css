@@ -125,3 +125,51 @@ textarea.input { min-height: 80px; resize: vertical; }
 .progress { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
 .progress > div { height: 100%; background: var(--teal); transition: width .2s; }
 @media (min-width: 900px) { .screen { padding-left: 24px; padding-right: 24px; } }
+
+/* --- Correzioni iPhone (22/11/2026) --- */
+
+/* Una finestra aperta blocca la pagina sotto; chiusa l'ultima, lo scroll torna sempre. */
+html.sheet-open, html.sheet-open body { overflow: hidden; }
+html, body { overflow-x: hidden; }
+body { -webkit-overflow-scrolling: touch; }
+
+/* Campi: non devono mai essere più larghi dello schermo */
+.field { min-width: 0; }
+.input { min-width: 0; max-width: 100%; }
+.pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.pair.stacked { grid-template-columns: minmax(0, 1fr); }
+
+/* Date e orari: Safari li disegna con una larghezza propria; li riportiamo allo stile dei campi */
+input[type='date'].input, input[type='datetime-local'].input, input[type='time'].input {
+  -webkit-appearance: none; appearance: none; display: block; width: 100%;
+  min-height: 48px; line-height: 26px; text-align: left; background: var(--card);
+}
+input.input::-webkit-date-and-time-value { text-align: left; margin: 0; }
+input.input::-webkit-datetime-edit { padding: 0; }
+
+/* Menu a tendina: stessa altezza degli altri campi, freccia disegnata da noi */
+select.input {
+  -webkit-appearance: none; appearance: none; padding-right: 36px; text-overflow: ellipsis;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%235A665D' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+}
+
+/* Passaggi tra le pagine più morbidi */
+@keyframes page-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.screen { animation: page-in .22s ease-out both; }
+.screen > * { animation: rise-in .32s cubic-bezier(.2, .8, .2, 1) both; }
+.screen > *:nth-child(2) { animation-delay: .03s; }
+.screen > *:nth-child(3) { animation-delay: .06s; }
+.screen > *:nth-child(n+4) { animation-delay: .09s; }
+.screen > .fab, .screen > .bottom-bar, .screen > .tabbar, .screen > nav { animation: page-in .22s ease-out both; }
+.sheet-backdrop { animation: fade-in .2s ease-out both; }
+.sheet { animation: sheet-in .28s cubic-bezier(.2, .8, .2, 1) both; }
+.btn, .chip, .linkcard, .tabbar a, .icon-btn { transition: transform .12s ease, background-color .15s ease, color .15s ease; }
+.btn:active, .linkcard:active, .icon-btn:active { transform: scale(.98); }
+@media (prefers-reduced-motion: reduce) {
+  .screen, .screen > *, .sheet, .sheet-backdrop { animation: none !important; }
+}
+.screen > .sheet-backdrop { animation: fade-in .2s ease-out both; }

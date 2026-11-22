@@ -57,3 +57,18 @@ export const EXPENSE_CATEGORIES: { id: ExpenseCategory; label: string; bg: strin
 export const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF', 'JPY', 'CZK', 'DKK', 'HUF', 'NOK', 'PLN', 'SEK', 'RON', 'TRY', 'AUD', 'CAD', 'CNY', 'HKD', 'INR', 'MXN', 'BRL', 'THB', 'ZAR', 'ISK', 'SGD', 'KRW', 'NZD', 'IDR', 'ILS', 'PHP', 'MYR'];
 
 export const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
+
+/** Testo leggibile di un errore: gli errori di Supabase sono oggetti semplici con "message". */
+export function errorText(e: unknown): string {
+  if (e instanceof Error) return e.message;
+  if (e && typeof e === 'object') {
+    const o = e as { message?: unknown; error_description?: unknown; error?: unknown; details?: unknown };
+    const m = o.message ?? o.error_description ?? o.error ?? o.details;
+    if (typeof m === 'string' && m) {
+      if (/row-level security/i.test(m)) return 'Non hai i permessi per questa operazione. Ricarica la pagina e riprova.';
+      if (/failed to fetch|network/i.test(m)) return 'Connessione assente. Riprova quando sei online.';
+      return m;
+    }
+  }
+  return typeof e === 'string' ? e : 'Errore imprevisto. Riprova.';
+}

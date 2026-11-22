@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Avatar, Icon, Switch, toast } from '../../components/ui';
-import { DOC_CATEGORIES, uid } from '../../lib/format';
+import { DOC_CATEGORIES, uid, errorText } from '../../lib/format';
 import { t } from '../../lib/i18n';
 import { useTrip } from '../../lib/TripContext';
 import { BUCKET, supabase, type DocCategory, type TripDocument } from '../../lib/supabase';
@@ -66,7 +66,7 @@ export default function DocumentForm({ category, doc, initialFile, onDone }: {
       toast('Documento salvato');
       onDone(id);
     } catch (e) {
-      setErr(e instanceof Error ? e.message : String(e));
+      setErr(errorText(e));
     } finally { setBusy(false); }
   }
 
@@ -92,10 +92,10 @@ export default function DocumentForm({ category, doc, initialFile, onDone }: {
         </select></div>
       <div className="field"><label htmlFor="d-title">{t('Titolo')}</label>
         <input id="d-title" className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="es. Volo Torino → Lisbona" maxLength={160} required /></div>
-      <div className="row">
-        <div className="field grow"><label htmlFor="d-start">{cat === 'alloggi' ? 'Check-in' : t('Data e ora')}</label>
+      <div className="pair stacked">
+        <div className="field"><label htmlFor="d-start">{cat === 'alloggi' ? 'Check-in' : t('Data e ora')}</label>
           <input id="d-start" className="input" type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} /></div>
-        <div className="field grow"><label htmlFor="d-end">{cat === 'alloggi' ? 'Check-out' : 'Fine (facoltativa)'}</label>
+        <div className="field"><label htmlFor="d-end">{cat === 'alloggi' ? 'Check-out' : 'Fine (facoltativa)'}</label>
           <input id="d-end" className="input" type="datetime-local" value={endsAt} min={startsAt} onChange={(e) => setEndsAt(e.target.value)} /></div>
       </div>
       <div className="field"><label htmlFor="d-ref">{t('Codice prenotazione')}</label>
