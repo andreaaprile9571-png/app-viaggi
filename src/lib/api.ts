@@ -126,14 +126,19 @@ export async function flushQueue() {
 }
 
 // ---------- file ----------
-export async function fileUrl(path: string) {
+/** Il file del documento: dalla copia sul telefono se c'è, altrimenti scaricato (e salvato offline). */
+export async function fileBlob(path: string): Promise<Blob> {
   const cacheKey = `file:${path}`;
   const cached = await get<Blob>(cacheKey);
-  if (cached) return URL.createObjectURL(cached);
+  if (cached) return cached;
   const { data, error } = await supabase.storage.from(BUCKET).download(path);
   if (error || !data) throw error ?? new Error('download');
   await set(cacheKey, data);
-  return URL.createObjectURL(data);
+  return data;
+}
+
+export async function fileUrl(path: string) {
+  return URL.createObjectURL(await fileBlob(path));
 }
 
 export async function isFileCached(path: string) {

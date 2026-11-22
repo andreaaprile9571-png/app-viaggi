@@ -5,11 +5,18 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
 const stamp = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 const day = (s: string) => s.replace(/-/g, '');
+// Righe lunghe spezzate a 73 byte senza mai tagliare un carattere (le emoji occupano più byte).
+const enc = new TextEncoder();
 const fold = (line: string) => {
   const out: string[] = [];
-  let rest = line;
-  while (rest.length > 74) { out.push(rest.slice(0, 74)); rest = ' ' + rest.slice(74); }
-  out.push(rest);
+  let cur = '';
+  let bytes = 0;
+  for (const ch of line) {
+    const n = enc.encode(ch).length;
+    if (bytes + n > 73) { out.push(cur); cur = ' '; bytes = 1; }
+    cur += ch; bytes += n;
+  }
+  out.push(cur);
   return out.join('\r\n');
 };
 const CAT: Record<string, string> = {
@@ -56,6 +63,10 @@ Deno.serve(async (req) => {
   }
   lines.push('END:VCALENDAR');
   return new Response(lines.map(fold).join('\r\n'), {
-    headers: { 'Content-Type': 'text/calendar; charset=utf-8', 'Content-Disposition': `inline; filename="viaggio.ics"`, 'Cache-Control': 'max-age=900' },
+    headers: {
+      'Content-Type': 'text/calendar; charset=utf-8', 'Content-Disposition': `inline; filename="viaggio.ics"`, 'Cache-Control': 'max-age=900',
+      // l'app scarica il file per l'aggiunta una tantum (Android)
+      'Access-Control-Allow-Origin': '*',
+    },
   });
 });

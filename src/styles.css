@@ -13,7 +13,7 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; background: var(--bg); }
-body { overscroll-behavior-y: none; }
+html { overscroll-behavior-y: none; }
 button, input, select, textarea { font: inherit; color: inherit; }
 a { color: var(--teal); }
 a:hover { color: var(--teal-dark); }
@@ -130,8 +130,8 @@ textarea.input { min-height: 80px; resize: vertical; }
 
 /* Una finestra aperta blocca la pagina sotto; chiusa l'ultima, lo scroll torna sempre. */
 html.sheet-open, html.sheet-open body { overflow: hidden; }
-html, body { overflow-x: hidden; }
-body { -webkit-overflow-scrolling: touch; }
+/* Niente overflow su html/body: insieme a overscroll-behavior rendeva body un contenitore che bloccava lo scroll al tocco (Android). */
+#root { overflow-x: clip; }
 
 /* Campi: non devono mai essere più larghi dello schermo */
 .field { min-width: 0; }
@@ -173,3 +173,8 @@ select.input {
   .screen, .screen > *, .sheet, .sheet-backdrop { animation: none !important; }
 }
 .screen > .sheet-backdrop { animation: fade-in .2s ease-out both; }
+
+/* Visualizzatore PDF */
+.pdf-viewer { display: flex; flex-direction: column; gap: 8px; }
+.pdf-pages { display: flex; flex-direction: column; gap: 10px; }
+.pdf-pages canvas { border-radius: 10px; border: 1px solid var(--line); background: #fff; }

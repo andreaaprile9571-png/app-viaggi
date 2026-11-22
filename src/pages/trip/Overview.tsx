@@ -5,7 +5,7 @@ import { dateShort, dateTime, DOC_CATEGORIES, money, range, relTime } from '../.
 import { t } from '../../lib/i18n';
 import { weather, weatherLabel, type DayWeather } from '../../lib/integrations';
 import { useTrip } from '../../lib/TripContext';
-import { SUPABASE_URL } from '../../lib/supabase';
+import CalendarSync from '../../components/CalendarSync';
 
 export default function Overview() {
   const { b, balances, stale, queued, memberName } = useTrip();
@@ -27,7 +27,6 @@ export default function Overview() {
   const myBal = me ? balances[me.id] ?? 0 : 0;
   const tripDays = wx.filter((d) => (!trip.start_date || d.date >= trip.start_date) && (!trip.end_date || d.date <= trip.end_date));
   const days = tripDays.length ? tripDays : wx.slice(0, 7);
-  const calUrl = `${SUPABASE_URL.replace('https://', 'webcal://')}/functions/v1/calendar?token=${trip.calendar_token}`;
   const cat = next ? DOC_CATEGORIES.find((c) => c.id === next.category)! : null;
 
   return (
@@ -88,14 +87,7 @@ export default function Overview() {
 
       <section className="stack">
         <h2 className="eyebrow">{t('Calendario del viaggio')}</h2>
-        <div className="card row">
-          <span className="icon-tile" style={{ background: 'var(--blue-soft)', color: 'var(--blue)' }}><Icon name="calendar" /></span>
-          <span className="col grow"><span className="strong small">Voli, alloggi e attività nel tuo calendario</span><span className="tiny muted">Google, Apple e Outlook · si aggiorna da solo</span></span>
-        </div>
-        <div className="row">
-          <a className="btn btn-ghost grow" href={calUrl}>Apple / Outlook</a>
-          <a className="btn btn-ghost grow" href={`https://calendar.google.com/calendar/render?cid=${encodeURIComponent(calUrl)}`} target="_blank" rel="noreferrer">Google Calendar</a>
-        </div>
+        <CalendarSync token={trip.calendar_token} tripName={trip.name} />
       </section>
 
       <section className="stack">

@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Avatar, DOC_ICON, Icon, Sheet, Switch, toast } from '../../components/ui';
-import { fileUrl, isFileCached } from '../../lib/api';
+import { fileBlob, isFileCached } from '../../lib/api';
+import { openWithApp } from '../../lib/native';
+const PdfViewer = lazy(() => import('../../components/PdfViewer'));
 import { dateLong, dateTime, DOC_CATEGORIES } from '../../lib/format';
 import { t } from '../../lib/i18n';
 import { appleMapsLink, mapsLink } from '../../lib/integrations';
@@ -14,6 +16,7 @@ export default function DocumentDetail() {
   const nav = useNavigate();
   const { b, refresh, memberName } = useTrip();
   const doc = b.documents.find((d) => d.id === docId);
+  const [blob, setBlob] = useState<Blob | null>(null);
   const [url, setUrl] = useState<string | null>(null);
   const [cached, setCached] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -26,11 +29,14 @@ export default function DocumentDetail() {
   const assignees = b.assignees.filter((a) => a.document_id === doc.id).map((a) => b.members.find((m) => m.id === a.member_id)!).filter(Boolean);
   const canEdit = doc.uploaded_by === b.me?.id || b.me?.role === 'organizer';
   const isImg = doc.mime_type?.startsWith('image/');
+  const isPdf = doc.mime_type === 'application/pdf' || /\.pdf$/i.test(doc.file_name ?? '');
 
   async function open() {
     if (!doc?.file_path) return;
-    try { const u = await fileUrl(doc.file_path); setUrl(u); setCached(true); setViewing(true); }
-    catch { toast('File non disponibile offline'); }
+    try {
+      const f = await fileBlob(doc.file_path);
+      setBlob(f); setUrl(URL.createObjectURL(f)); setCached(true); setViewing(true);
+    } catch { toast(t('File non disponibile offline')); }
   }
   async function toggleVisibility(v: boolean) {
     await supabase.from('documents').update({ visibility: v ? 'group' : 'private' }).eq('id', doc!.id);
@@ -95,10 +101,14 @@ export default function DocumentDetail() {
       </section>
       {canEdit && <button className="btn btn-danger btn-block" onClick={remove}><Icon name="trash" size={18} />{t('Elimina')}</button>}
 
-      {viewing && url && (
+      {viewing && url && blob && (
         <Sheet title={doc.file_name ?? doc.title} onClose={() => setViewing(false)}>
-          {isImg ? <img src={url} alt={doc.title} style={{ width: '100%', borderRadius: 16 }} /> : <iframe className="viewer" src={url} title={doc.title} />}
-          <a className="btn btn-ghost btn-block" href={url} download={doc.file_name ?? 'documento'}><Icon name="download" size={18} />Scarica / apri con un'altra app</a>
+          {isImg ? <img src={url} alt={doc.title} style={{ width: '100%', borderRadius: 16 }} />
+            : isPdf ? <Suspense fallback={<p className="small muted">{t('Apertura del documento…')}</p>}><PdfViewer blob={blob} /></Suspense>
+            : <p className="small muted">{t('Questo tipo di file si apre con un\'altra app.')}</p>}
+          <button className="btn btn-ghost btn-block" onClick={() => openWithApp(blob, doc.file_name ?? doc.title).catch(() => toast(t('Impossibile aprire il file')))}>
+            <Icon name="download" size={18} />{t('Apri con…')}
+          </button>
         </Sheet>
       )}
       {editing && <Sheet title="Modifica documento" onClose={() => setEditing(false)}><DocumentForm doc={doc} onDone={() => setEditing(false)} /></Sheet>}

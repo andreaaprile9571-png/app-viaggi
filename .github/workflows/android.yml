@@ -43,13 +43,13 @@ jobs:
           ./gradlew assembleDebug --no-daemon
 
       - name: Rinomina l'APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk viaggi-di-gruppo-${{ github.run_number }}.apk
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk evenkeel-${{ github.run_number }}.apk
 
       - name: Allega l'APK all'esecuzione
         uses: actions/upload-artifact@v4
         with:
-          name: viaggi-di-gruppo-apk
-          path: viaggi-di-gruppo-${{ github.run_number }}.apk
+          name: evenkeel-apk
+          path: evenkeel-${{ github.run_number }}.apk
 
       - name: Pubblica l'APK nella pagina Releases (link scaricabile dal telefono)
         uses: softprops/action-gh-release@v2
@@ -57,6 +57,6 @@ jobs:
           tag_name: build-${{ github.run_number }}
           name: Build ${{ github.run_number }}
           prerelease: true
-          files: viaggi-di-gruppo-${{ github.run_number }}.apk
+          files: evenkeel-${{ github.run_number }}.apk
           body: |
             APK di prova (firmato in modalità debug). Sul telefono Android: scarica il file, aprilo e consenti l'installazione da questa fonte.

@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Evenkeel',
   webDir: 'dist',
   android: { allowMixedContent: false },
-  backgroundColor: '#F3F5F7',
+  backgroundColor: '#EFEADF',
 };
 
 export default config;
