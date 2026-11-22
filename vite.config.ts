@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Shipshape',
-        short_name: 'Shipshape',
+        name: 'Evenkeel',
+        short_name: 'Evenkeel',
         description: 'Documenti, prenotazioni e spese condivise del viaggio, anche offline.',
         lang: 'it',
         start_url: base,

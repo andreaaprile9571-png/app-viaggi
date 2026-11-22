@@ -137,7 +137,7 @@ export const DOC_ICON: Record<string, IconName> = {
   voli: 'plane', alloggi: 'bed', trasporti: 'train', attivita: 'ticket', assicurazione: 'shield', personali: 'id', altro: 'folder',
 };
 
-/** Marchio Shipshape: due vele sopra uno scafo a "=" (il gruppo che torna pari). */
+/** Marchio Evenkeel ("on an even keel"): due vele sopra uno scafo a "=", il gruppo che viaggia in equilibrio e torna pari. */
 export function Logo({ size = 28, sail = 'var(--teal)', jib = 'var(--orange)', withName = false }: { size?: number; sail?: string; jib?: string; withName?: boolean }) {
   const mark = (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
@@ -151,7 +151,7 @@ export function Logo({ size = 28, sail = 'var(--teal)', jib = 'var(--orange)', w
   return (
     <span className="row" style={{ gap: 8 }}>
       {mark}
-      <span className="display" style={{ fontSize: Math.round(size * 0.8), color: 'var(--ink)' }}>Shipshape</span>
+      <span className="display" style={{ fontSize: Math.round(size * 0.8), color: 'var(--ink)' }}>Evenkeel</span>
     </span>
   );
 }

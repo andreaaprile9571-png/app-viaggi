@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     .eq('trip_id', trip.id).eq('visibility', 'group').not('starts_at', 'is', null);
 
   const now = stamp(new Date());
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Shipshape//IT', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Evenkeel//IT', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
     `X-WR-CALNAME:${esc(trip.name)}`, 'REFRESH-INTERVAL;VALUE=DURATION:PT2H', 'X-PUBLISHED-TTL:PT2H'];
 
   if (trip.start_date) {
@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
     const start = new Date(d.starts_at);
     const isStay = d.category === 'alloggi';
     const end = d.ends_at ? new Date(d.ends_at) : new Date(start.getTime() + (isStay ? 0 : 60) * 60000);
-    const desc = [d.ref_code ? `Codice: ${d.ref_code}` : '', 'Apri il documento nell\'app Shipshape.'].filter(Boolean).join('\n');
+    const desc = [d.ref_code ? `Codice: ${d.ref_code}` : '', 'Apri il documento nell\'app Evenkeel.'].filter(Boolean).join('\n');
     if (isStay) {
       lines.push('BEGIN:VEVENT', `UID:doc-${d.id}-in`, `DTSTAMP:${now}`, `DTSTART:${stamp(start)}`, `DTEND:${stamp(new Date(start.getTime() + 3600000))}`,
         `SUMMARY:${esc(`${CAT[d.category]} Check-in · ${d.title}`)}`, ...(d.address ? [`LOCATION:${esc(d.address)}`] : []), `DESCRIPTION:${esc(desc)}`, 'END:VEVENT');

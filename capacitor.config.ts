@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'app.viaggidigruppo.android',
-  appName: 'Shipshape',
+  appName: 'Evenkeel',
   webDir: 'dist',
   android: { allowMixedContent: false },
   backgroundColor: '#F3F5F7',
