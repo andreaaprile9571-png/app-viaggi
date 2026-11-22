@@ -13,7 +13,7 @@ export default function DocumentForm({ category, doc, initialFile, onDone }: {
 }) {
   const { b, refresh } = useTrip();
   const [cat, setCat] = useState<DocCategory>(doc?.category ?? category ?? 'voli');
-  const [title, setTitle] = useState(doc?.title ?? '');
+  const [title, setTitle] = useState(doc?.title ?? (initialFile ? initialFile.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').slice(0, 80) : ''));
   const [startsAt, setStartsAt] = useState(toLocal(doc?.starts_at ?? null));
   const [endsAt, setEndsAt] = useState(toLocal(doc?.ends_at ?? null));
   const [ref, setRef] = useState(doc?.ref_code ?? '');
@@ -26,7 +26,11 @@ export default function DocumentForm({ category, doc, initialFile, onDone }: {
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => { if (!doc && cat === 'personali') setShared(false); }, [cat, doc]);
-  useEffect(() => { if (file && !title) setTitle(file.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').slice(0, 80)); }, [file, title]);
+  // Il nome del file propone un titolo solo quando scegli un file e il titolo è vuoto: se poi lo cancelli resta vuoto.
+  const pickFile = (f: File | null) => {
+    setFile(f);
+    if (f && !title.trim()) setTitle(f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').slice(0, 80));
+  };
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -77,11 +81,11 @@ export default function DocumentForm({ category, doc, initialFile, onDone }: {
       <div className="row">
         <label className="btn btn-ghost grow" style={{ position: 'relative' }}>
           <Icon name="upload" size={18} />{file ? t('Cambia file') : doc?.file_name ? t('Sostituisci file') : t('Scegli file')}
-          <input type="file" accept="application/pdf,image/*,.pkpass" style={{ position: 'absolute', opacity: 0, inset: 0 }} onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+          <input type="file" accept="application/pdf,image/*,.pkpass" style={{ position: 'absolute', opacity: 0, inset: 0 }} onChange={(e) => pickFile(e.target.files?.[0] ?? null)} />
         </label>
         <label className="btn btn-ghost" style={{ position: 'relative' }} aria-label={t('Scatta foto')}>
           <Icon name="camera" size={18} />
-          <input type="file" accept="image/*" capture="environment" style={{ position: 'absolute', opacity: 0, inset: 0 }} onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+          <input type="file" accept="image/*" capture="environment" style={{ position: 'absolute', opacity: 0, inset: 0 }} onChange={(e) => pickFile(e.target.files?.[0] ?? null)} />
         </label>
       </div>
       <p className="tiny muted">{file ? `${file.name} · ${(file.size / 1024).toFixed(0)} KB` : doc?.file_name ?? t('PDF o foto. Dal selettore puoi scegliere anche file da Google Drive, Dropbox o iCloud.')}</p>

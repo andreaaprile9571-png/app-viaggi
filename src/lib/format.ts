@@ -72,3 +72,27 @@ export function errorText(e: unknown): string {
   }
   return typeof e === 'string' ? e : t('Errore imprevisto. Riprova.');
 }
+
+/** Parole che suggeriscono la categoria di una spesa (italiano, inglese, qualche nome di catena o servizio). */
+const CATEGORY_WORDS: [ExpenseCategory, string[]][] = [
+  ['alloggio', ['hotel', 'airbnb', 'ostello', 'hostel', 'b&b', 'bnb', 'albergo', 'booking', 'appartamento', 'apartment', 'campeggio', 'camping', 'tassa di soggiorno', 'tourist tax', 'alloggio', 'pernottamento', 'resort', 'agriturismo', 'guesthouse']],
+  ['trasporti', ['taxi', 'uber', 'bolt', 'free now', 'treno', 'train', 'trenitalia', 'italo', 'bus', 'autobus', 'pullman', 'flixbus', 'metro', 'metropolitana', 'tram', 'volo', 'aereo', 'flight', 'ryanair', 'easyjet', 'vueling', 'ita airways', 'benzina', 'carburante', 'gasolio', 'diesel', 'fuel', 'parcheggio', 'parking', 'pedaggio', 'autostrada', 'toll', 'noleggio auto', 'car rental', 'traghetto', 'ferry', 'aliscafo', 'funivia', 'navetta', 'shuttle', 'transfer', 'monopattino', 'scooter']],
+  ['spesa', ['supermercato', 'supermarket', 'spesa', 'groceries', 'grocery', 'alimentari', 'minimarket', 'mercato', 'market', 'lidl', 'aldi', 'carrefour', 'conad', 'coop', 'esselunga', 'eurospin', 'pingo doce', 'continente', 'mercadona', 'tesco', 'spar', 'auchan', 'farmacia', 'pharmacy']],
+  ['attivita', ['gita', 'museo', 'museum', 'tour', 'ingresso', 'entrance', 'entry', 'biglietto', 'biglietti', 'ticket', 'escursione', 'excursion', 'concerto', 'concert', 'spettacolo', 'teatro', 'theatre', 'cinema', 'parco', 'zoo', 'acquario', 'aquarium', 'spa', 'terme', 'lezione', 'corso', 'surf', 'kayak', 'noleggio bici', 'bike rental', 'visita', 'guida', 'guided', 'castello', 'palazzo', 'mostra', 'discoteca', 'club', 'lido', 'ombrellone']],
+  ['cibo', ['cena', 'pranzo', 'colazione', 'merenda', 'aperitivo', 'aperi', 'ristorante', 'restaurant', 'trattoria', 'osteria', 'pizzeria', 'pizza', 'sushi', 'burger', 'hamburger', 'kebab', 'panino', 'panini', 'piadina', 'brunch', 'snack', 'bar', 'caffe', 'cafe', 'coffee', 'cappuccino', 'gelato', 'gelateria', 'pasticceria', 'bakery', 'birra', 'beer', 'vino', 'wine', 'cocktail', 'drink', 'drinks', 'tapas', 'dinner', 'lunch', 'breakfast', 'food', 'mcdonald', 'starbucks', 'burger king', 'pastel de nata', 'cibo']],
+];
+const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+/** Indovina la categoria dalla descrizione: null se nessuna parola la suggerisce. */
+export function guessCategory(text: string): ExpenseCategory | null {
+  const s = ` ${norm(text).replace(/[^a-z0-9&]+/g, ' ')} `;
+  if (s.trim().length < 2) return null;
+  for (const [cat, words] of CATEGORY_WORDS) {
+    for (const w of words) {
+      const k = norm(w);
+      // le parole corte devono essere intere ("bar" non deve scattare dentro "barca")
+      if (k.length <= 4 ? s.includes(` ${k} `) || s.includes(` ${k}s `) : s.includes(k)) return cat;
+    }
+  }
+  return null;
+}

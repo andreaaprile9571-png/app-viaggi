@@ -201,3 +201,18 @@ select.input {
 .tl-day.today::before { background: var(--orange); border-color: var(--orange); }
 .tl-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: inherit; font-weight: inherit; }
 .tl-stops { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+
+/* --- Liste più morbide (22/11/2026): niente bordi doppi, divisori leggeri, più respiro --- */
+:root { --soft-shadow: 0 1px 2px rgba(34,48,42,.04), 0 6px 18px rgba(34,48,42,.06); --divider: rgba(34,48,42,.07); }
+.list { border: none; border-radius: 20px; padding: 4px 16px; box-shadow: var(--soft-shadow); }
+.list > li { padding: 14px 0; border-bottom: 1px solid var(--divider); }
+.linkcard { border: none; border-radius: 20px; padding: 16px; box-shadow: var(--soft-shadow); }
+.rowlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.rowlist > li { display: block; }
+.rowlist .linkcard { min-height: 64px; }
+.sheet .rowlist .linkcard { background: var(--bg); box-shadow: none; }
+.card { border: none; box-shadow: var(--soft-shadow); border-radius: 20px; }
+.tl-card { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border: none; border-radius: 18px; background: var(--card); color: inherit; text-decoration: none; text-align: left; box-shadow: var(--soft-shadow); cursor: pointer; font: inherit; }
+.tl-card:hover { color: inherit; }
+.tl-time { width: 42px; flex-shrink: 0; font-size: 12px; font-weight: 600; color: var(--muted); }
+.list .linkcard { box-shadow: none; background: transparent; border-radius: 0; padding: 4px 0; }

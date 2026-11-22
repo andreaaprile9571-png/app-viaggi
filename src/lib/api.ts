@@ -2,7 +2,7 @@
 // e mette in coda le spese create senza rete.
 import { del, get, keys, set } from 'idb-keyval';
 import { BUCKET, supabase } from './supabase';
-import type { Expense, ListItem, Member, Profile, Trip, TripBundle } from './supabase';
+import type { Expense, ItineraryItem, ListItem, Member, Profile, Trip, TripBundle } from './supabase';
 
 const bundleKey = (id: string) => `trip:${id}`;
 const QUEUE = 'queue:expenses';
@@ -32,7 +32,7 @@ export async function loadTrips(): Promise<{ trips: Trip[]; members: Member[] }>
 export async function loadTripBundle(tripId: string): Promise<TripBundle> {
   try {
     const uid = await currentUserId();
-    const [trip, members, documents, expenses, settlements, activity, lists] = await Promise.all([
+    const [trip, members, documents, expenses, settlements, activity, lists, plan] = await Promise.all([
       supabase.from('trips').select('*').eq('id', tripId).single(),
       supabase.from('members').select('*').eq('trip_id', tripId).order('created_at'),
       supabase.from('documents').select('*').eq('trip_id', tripId).order('starts_at', { ascending: true, nullsFirst: false }),
@@ -40,6 +40,7 @@ export async function loadTripBundle(tripId: string): Promise<TripBundle> {
       supabase.from('settlements').select('*').eq('trip_id', tripId).order('created_at'),
       supabase.from('activity').select('*').eq('trip_id', tripId).order('created_at', { ascending: false }).limit(30),
       supabase.from('list_items').select('*').eq('trip_id', tripId).order('created_at'),
+      supabase.from('itinerary_items').select('*').eq('trip_id', tripId).order('day').order('at_time', { nullsFirst: true }),
     ]);
     if (trip.error) throw trip.error;
     const docIds = (documents.data ?? []).map((d) => d.id);
@@ -55,14 +56,14 @@ export async function loadTripBundle(tripId: string): Promise<TripBundle> {
       trip: trip.data as Trip, members: ms, documents: documents.data ?? [], assignees: assignees.data ?? [],
       expenses: (expenses.data ?? []).map(numExpense), shares: (shares.data ?? []).map((s) => ({ ...s, amount_base: Number(s.amount_base) })),
       settlements: (settlements.data ?? []).map((s) => ({ ...s, amount_base: Number(s.amount_base) })),
-      activity: activity.data ?? [], profiles: profiles as Profile[], lists: (lists.data ?? []) as ListItem[],
+      activity: activity.data ?? [], profiles: profiles as Profile[], lists: (lists.data ?? []) as ListItem[], plan: (plan.data ?? []) as ItineraryItem[],
       me: ms.find((m) => m.user_id === uid) ?? null, fetchedAt: Date.now(),
     };
     await set(bundleKey(tripId), bundle);
     return bundle;
   } catch (e) {
     const cached = await get<TripBundle>(bundleKey(tripId));
-    if (cached) return { ...cached, lists: cached.lists ?? [], fetchedAt: -cached.fetchedAt };
+    if (cached) return { ...cached, lists: cached.lists ?? [], plan: cached.plan ?? [], fetchedAt: -cached.fetchedAt };
     throw e;
   }
 }

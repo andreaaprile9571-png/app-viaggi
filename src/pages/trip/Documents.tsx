@@ -62,12 +62,12 @@ export default function Documents() {
         return (
           <Sheet title={t(c.label)} onClose={() => setOpen(null)}>
             {docs.length ? (
-              <ul className="list" style={{ padding: 0 }}>
+              <ul className="rowlist">
                 {docs.map((d) => (
-                  <li key={d.id} style={{ padding: 0 }}>
-                    <Link to={d.id} className="linkcard" style={{ padding: '12px 0' }}>
+                  <li key={d.id}>
+                    <Link to={d.id} className="linkcard">
                       <span className="col grow"><span className="strong">{d.title}</span>
-                        <span className="small muted">{[d.starts_at && dateShort(d.starts_at), d.ref_code, d.visibility === 'private' ? 'privato' : null].filter(Boolean).join(' · ')}</span></span>
+                        <span className="small muted">{[d.starts_at && dateShort(d.starts_at), d.ref_code, d.visibility === 'private' ? t('privato') : null].filter(Boolean).join(' · ')}</span></span>
                       <Icon name="chevron" size={18} className="muted" />
                     </Link>
                   </li>

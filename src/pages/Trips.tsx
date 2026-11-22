@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, Icon, Logo, Sheet } from '../components/ui';
 import { loadTrips } from '../lib/api';
 import { daysUntil, errorText, range } from '../lib/format';
-import { t } from '../lib/i18n';
+import { t, tf } from '../lib/i18n';
 import type { Member, Trip } from '../lib/supabase';
 import NewTripForm from './NewTrip';
 
@@ -53,7 +53,7 @@ export default function Trips({ name }: { name: string }) {
           <Link to={`/viaggio/${tr.id}`} className="card" style={{ padding: 0, overflow: 'hidden', textDecoration: 'none', color: 'inherit', boxShadow: 'var(--shadow)' }}>
             <div style={{ background: tr.cover_color, color: '#fff', padding: 20, minHeight: 132, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 6, position: 'relative' }}>
               {d !== null && <span className="pill" style={{ position: 'absolute', top: 16, left: 20, background: 'rgba(255,255,255,.18)', color: '#fff' }}>
-                {d > 0 ? `Prossimo · tra ${d} giorni` : d === 0 ? t('Si parte oggi') : t('In corso')}</span>}
+                {d > 0 ? d === 1 ? t('Prossimo · domani') : tf('Prossimo · tra {n} giorni', { n: d }) : d === 0 ? t('Si parte oggi') : t('In corso')}</span>}
               <h2 className="display" style={{ fontSize: 28 }}>{tr.name}</h2>
               <p className="small" style={{ opacity: .9 }}>{range(tr.start_date, tr.end_date)}</p>
             </div>

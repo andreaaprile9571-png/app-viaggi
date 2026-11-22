@@ -3,9 +3,9 @@ import { NavLink, useParams } from 'react-router-dom';
 import { t } from '../lib/i18n';
 import type { Member } from '../lib/supabase';
 
-type IconName = 'home' | 'doc' | 'receipt' | 'users' | 'plane' | 'bed' | 'train' | 'ticket' | 'shield' | 'id' | 'plus' | 'back' | 'close'
+export type IconName = 'home' | 'doc' | 'receipt' | 'users' | 'plane' | 'bed' | 'train' | 'ticket' | 'shield' | 'id' | 'plus' | 'back' | 'close'
   | 'chevron' | 'search' | 'camera' | 'cloud-check' | 'lock' | 'copy' | 'share' | 'download' | 'check' | 'more' | 'calendar' | 'map'
-  | 'sun' | 'cloud' | 'cloud-sun' | 'rain' | 'snow' | 'storm' | 'settings' | 'upload' | 'trash' | 'user-plus' | 'wallet' | 'folder' | 'mountain' | 'list' | 'chart' | 'route';
+  | 'sun' | 'cloud' | 'cloud-sun' | 'rain' | 'snow' | 'storm' | 'settings' | 'upload' | 'trash' | 'user-plus' | 'wallet' | 'folder' | 'mountain' | 'list' | 'chart' | 'route' | 'note' | 'food' | 'pin' | 'edit';
 
 const P: Record<IconName, ReactNode> = {
   home: <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" />,
@@ -34,6 +34,10 @@ const P: Record<IconName, ReactNode> = {
   more: <><circle cx="5" cy="12" r="1" /><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /></>,
   calendar: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></>,
   map: <><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z" /><path d="M9 4v14M15 6v14" /></>,
+  note: <><path d="M5 4h14v12l-4 4H5z" /><path d="M15 20v-4h4M8 9h8M8 13h5" /></>,
+  food: <><path d="M7 3v8a2 2 0 0 0 2 2v8M5 3v5M9 3v5M17 21V3c-2 1.5-3 4-3 7v3h3" /></>,
+  pin: <><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" /><circle cx="12" cy="10" r="2.5" /></>,
+  edit: <><path d="M4 20h4L19 9l-4-4L4 16z" /><path d="m13.5 6.5 4 4" /></>,
   list: <><path d="M9 6h11M9 12h11M9 18h11" /><path d="m3.5 6 1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17" /></>,
   chart: <><path d="M4 20V10M10 20V4M16 20v-7M21 20H3" /></>,
   route: <><circle cx="6" cy="18" r="2.5" /><circle cx="18" cy="6" r="2.5" /><path d="M8.5 18H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5" /></>,

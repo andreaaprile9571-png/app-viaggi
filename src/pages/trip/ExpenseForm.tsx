@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Icon, toast } from '../../components/ui';
 import { fileUrl, saveExpense } from '../../lib/api';
 import { splitEqual, splitWeights } from '../../lib/balances';
-import { CURRENCIES, EXPENSE_CATEGORIES, money, uid, errorText } from '../../lib/format';
+import { CURRENCIES, EXPENSE_CATEGORIES, money, uid, errorText, guessCategory } from '../../lib/format';
 import { t } from '../../lib/i18n';
 import { fxRate } from '../../lib/integrations';
 import { readReceipt, shrinkImage } from '../../lib/ocr';
@@ -27,7 +27,15 @@ export default function ExpenseForm() {
   const [currency, setCurrency] = useState(editing?.currency ?? tripCur);
   const [rate, setRate] = useState(editing?.rate ?? 1);
   const [paidBy, setPaidBy] = useState(editing?.paid_by ?? b.me?.id ?? b.members[0]?.id);
-  const [category, setCategory] = useState<ExpenseCategory>(editing?.category ?? 'cibo');
+  const [category, setCategory] = useState<ExpenseCategory>(editing?.category ?? 'altro');
+  // finché non scegli tu una categoria, la deduciamo dalla descrizione mentre scrivi
+  const [catTouched, setCatTouched] = useState(!!editing);
+  const [catAuto, setCatAuto] = useState(false);
+  useEffect(() => {
+    if (catTouched) return;
+    const g = guessCategory(title);
+    setCategory(g ?? 'altro'); setCatAuto(!!g);
+  }, [title, catTouched]);
   const [day, setDay] = useState(editing?.spent_on ?? new Date().toISOString().slice(0, 10));
   const [mode, setMode] = useState<Mode>(editing?.split_mode ?? 'equal');
   const existing = editing ? b.shares.filter((s) => s.expense_id === editing.id) : [];
@@ -135,8 +143,8 @@ export default function ExpenseForm() {
         <input id="e-title" className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("es. Cena ad Alfama")} maxLength={160} /></div>
       <div className="pair">
         <div className="field"><label htmlFor="e-day">{t("Data")}</label><input id="e-day" className="input" type="date" value={day} onChange={(e) => setDay(e.target.value)} /></div>
-        <div className="field"><label htmlFor="e-cat">{t('Categoria')}</label>
-          <select id="e-cat" className="input" value={category} onChange={(e) => setCategory(e.target.value as ExpenseCategory)}>
+        <div className="field"><label htmlFor="e-cat">{t('Categoria')}{catAuto && <span className="tiny" style={{ color: 'var(--teal)', marginLeft: 6 }}>· {t('automatica')}</span>}</label>
+          <select id="e-cat" className="input" value={category} onChange={(e) => { setCategory(e.target.value as ExpenseCategory); setCatTouched(true); setCatAuto(false); }}>
             {EXPENSE_CATEGORIES.map((c) => <option key={c.id} value={c.id}>{t(c.label)}</option>)}</select></div>
       </div>
 

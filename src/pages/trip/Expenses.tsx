@@ -100,13 +100,13 @@ export default function Expenses() {
       {byDay.map(([day, items]) => (
         <section key={day} className="stack" style={{ gap: 8 }}>
           <h2 className="small strong muted">{dateLong(day)}</h2>
-          <ul className="list">
+          <ul className="rowlist">
             {items.map((e) => {
               const c = EXPENSE_CATEGORIES.find((x) => x.id === e.category)!;
               const mine = b.shares.find((s) => s.expense_id === e.id && s.member_id === me?.id)?.amount_base ?? 0;
               return (
-                <li key={e.id} style={{ padding: 0 }}>
-                  <button className="linkcard" style={{ padding: '12px 0' }} onClick={() => nav(`nuova?id=${e.id}`)}>
+                <li key={e.id}>
+                  <button className="linkcard" onClick={() => nav(`nuova?id=${e.id}`)}>
                     <span className="icon-tile" style={{ width: 40, height: 40, borderRadius: 12, background: c.bg, color: c.fg, fontWeight: 700 }}>{e.title.charAt(0).toUpperCase()}</span>
                     <span className="col grow" style={{ gap: 2 }}>
                       <span className="row strong" style={{ gap: 6 }}><span className="ellipsis">{e.title}</span>{e.receipt_path && <Icon name="receipt" size={14} label={t("Scontrino allegato")} className="muted" />}</span>

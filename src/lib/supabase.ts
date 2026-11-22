@@ -18,7 +18,12 @@ export type Trip = {
 export type ListName = 'bagagli' | 'cose';
 export type ListItem = {
   id: string; trip_id: string; list: ListName; text: string; done: boolean;
-  member_id: string | null; created_by: string | null; created_at: string;
+  member_id: string | null; created_by: string | null; created_at: string; section?: string;
+};
+export type ItineraryKind = 'nota' | 'attivita' | 'pasto' | 'spostamento' | 'luogo';
+export type ItineraryItem = {
+  id: string; trip_id: string; day: string; at_time: string | null; kind: ItineraryKind; text: string;
+  place: string | null; created_by: string | null; created_at: string;
 };
 export type Member = {
   id: string; trip_id: string; user_id: string | null; display_name: string;
@@ -47,6 +52,6 @@ export const AVATAR_BUCKET = 'avatars';
 export type TripBundle = {
   trip: Trip; members: Member[]; documents: TripDocument[]; assignees: Assignee[];
   expenses: Expense[]; shares: Share[]; settlements: Settlement[]; activity: Activity[]; profiles: Profile[];
-  lists: ListItem[];
+  lists: ListItem[]; plan: ItineraryItem[];
   me: Member | null; fetchedAt: number;
 };
