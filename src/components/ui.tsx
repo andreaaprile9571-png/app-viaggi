@@ -58,10 +58,14 @@ export function Icon({ name, size = 22, stroke = 1.9, label, className }: { name
   );
 }
 
-export function Avatar({ m, large }: { m: Pick<Member, 'display_name' | 'color' | 'role'>; large?: boolean }) {
+export function Avatar({ m, large, size }: { m: Pick<Member, 'display_name' | 'color' | 'role'> & { avatar_url?: string | null }; large?: boolean; size?: number }) {
+  const [broken, setBroken] = useState(false);
+  const style: React.CSSProperties = { background: m.color, ...(size ? { width: size, height: size, borderRadius: size / 2, fontSize: Math.round(size * 0.4) } : {}) };
   return (
-    <span className={`avatar${large ? ' lg' : ''}${m.role === 'guest' ? ' guest' : ''}`} style={{ background: m.color }} title={m.display_name}>
-      {m.display_name.trim().charAt(0).toUpperCase() || '?'}
+    <span className={`avatar${large ? ' lg' : ''}${m.role === 'guest' ? ' guest' : ''}`} style={style} title={m.display_name}>
+      {m.avatar_url && !broken
+        ? <img src={m.avatar_url} alt="" loading="lazy" onError={() => setBroken(true)} />
+        : (m.display_name.trim().charAt(0).toUpperCase() || '?')}
     </span>
   );
 }

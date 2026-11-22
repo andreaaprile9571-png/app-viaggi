@@ -178,3 +178,7 @@ select.input {
 .pdf-viewer { display: flex; flex-direction: column; gap: 8px; }
 .pdf-pages { display: flex; flex-direction: column; gap: 10px; }
 .pdf-pages canvas { border-radius: 10px; border: 1px solid var(--line); background: #fff; }
+
+/* Foto profilo dentro gli avatar */
+.avatar { overflow: hidden; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }

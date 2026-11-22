@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon, toast } from '../components/ui';
+import AvatarPicker, { deleteAvatarFiles } from '../components/AvatarPicker';
 import { clearLocalData } from '../lib/api';
 import { getLang, setLang, t, useLang } from '../lib/i18n';
 import { exportJson } from '../lib/importexport';
@@ -32,6 +33,7 @@ export default function Settings({ userId, email }: { userId: string; email: str
   async function deleteAccount() {
     if (!confirm('Eliminare definitivamente il tuo account? I documenti che hai caricato verranno cancellati; nelle spese condivise comparirai come "Utente eliminato".')) return;
     if (prompt('Per confermare scrivi ELIMINA') !== 'ELIMINA') return;
+    await deleteAvatarFiles(userId);
     const { error } = await supabase.rpc('delete_my_account');
     if (error) { toast(error.message); return; }
     await clearLocalData();
@@ -46,6 +48,7 @@ export default function Settings({ userId, email }: { userId: string; email: str
       <form className="card stack" onSubmit={saveProfile}>
         <h2 className="eyebrow">{t('Profilo e pagamenti')}</h2>
         <p className="small muted">{email}</p>
+        <AvatarPicker userId={userId} name={p?.display_name ?? ''} url={p?.avatar_url} onChange={(u) => p && setP({ ...p, avatar_url: u })} />
         <div className="field"><label htmlFor="s-name">{t('Il tuo nome')}</label>
           <input id="s-name" className="input" value={p?.display_name ?? ''} onChange={(e) => p && setP({ ...p, display_name: e.target.value })} /></div>
         <div className="field"><label htmlFor="s-pp">{t('Link PayPal.me')} <span className="tiny">(facoltativo)</span></label>

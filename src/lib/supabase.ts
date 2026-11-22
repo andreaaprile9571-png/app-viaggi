@@ -16,7 +16,7 @@ export type Trip = {
 };
 export type Member = {
   id: string; trip_id: string; user_id: string | null; display_name: string;
-  role: 'organizer' | 'member' | 'guest'; color: string; created_at: string;
+  role: 'organizer' | 'member' | 'guest'; color: string; created_at: string; avatar_url?: string | null;
 };
 export type DocCategory = 'voli' | 'alloggi' | 'trasporti' | 'attivita' | 'assicurazione' | 'personali' | 'altro';
 export type TripDocument = {
@@ -35,7 +35,8 @@ export type Expense = {
 export type Share = { expense_id: string; member_id: string; amount_base: number; weight: number | null };
 export type Settlement = { id: string; trip_id: string; from_member: string; to_member: string; amount_base: number; created_at: string };
 export type Activity = { id: number; trip_id: string; member_id: string | null; kind: string; text: string; created_at: string };
-export type Profile = { id: string; display_name: string; paypal_me: string | null; iban: string | null; locale: string };
+export type Profile = { id: string; display_name: string; paypal_me: string | null; iban: string | null; locale: string; avatar_url?: string | null };
+export const AVATAR_BUCKET = 'avatars';
 
 export type TripBundle = {
   trip: Trip; members: Member[]; documents: TripDocument[]; assignees: Assignee[];
