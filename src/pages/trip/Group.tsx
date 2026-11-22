@@ -4,7 +4,7 @@ import QRCode from 'qrcode';
 import { Avatar, Icon, Sheet, TabBar, toast } from '../../components/ui';
 import { splitEqual } from '../../lib/balances';
 import { money, uid, errorText } from '../../lib/format';
-import { t } from '../../lib/i18n';
+import { t, tf } from '../../lib/i18n';
 import { parseImport, type ImportedExpense } from '../../lib/importexport';
 import { fxRate, whatsappLink } from '../../lib/integrations';
 import { useTrip } from '../../lib/TripContext';
@@ -34,28 +34,28 @@ export default function Group() {
     setGuest(''); refresh();
   }
   async function removeMember(id: string, name: string) {
-    if (!confirm(`Rimuovere ${name} dal viaggio?`)) return;
+    if (!confirm(tf('Rimuovere {nome} dal viaggio?', { nome: name }))) return;
     const { error } = await supabase.from('members').delete().eq('id', id);
-    if (error) toast('Non si può rimuovere chi ha spese o quote registrate'); else refresh();
+    if (error) toast(t("Non si può rimuovere chi ha spese o quote registrate")); else refresh();
   }
   async function rotate() {
-    if (!confirm('Il vecchio link smetterà di funzionare. Continuare?')) return;
+    if (!confirm(t("Il vecchio link smetterà di funzionare. Continuare?"))) return;
     await supabase.rpc('rotate_trip_secrets', { p_trip: b.trip.id, p_what: 'invite' }); refresh();
   }
   async function leave() {
-    if (!b.me || !confirm('Uscire da questo viaggio?')) return;
+    if (!b.me || !confirm(t("Uscire da questo viaggio?"))) return;
     const { error } = await supabase.from('members').delete().eq('id', b.me.id);
-    if (error) toast('Hai spese registrate: chiedi all\'organizzatore di rimuoverti dopo aver saldato'); else nav('/');
+    if (error) toast(t("Hai spese registrate: chiedi all'organizzatore di rimuoverti dopo aver saldato")); else nav('/');
   }
   async function deleteTrip() {
-    if (!confirm('Eliminare il viaggio con tutti i documenti e le spese per tutto il gruppo? Non si può annullare.')) return;
+    if (!confirm(t("Eliminare il viaggio con tutti i documenti e le spese per tutto il gruppo? Non si può annullare."))) return;
     await supabase.from('trips').delete().eq('id', b.trip.id); nav('/');
   }
 
   async function onImportFile(f?: File) {
     if (!f) return;
     const res = parseImport(await f.text());
-    if (!res.expenses.length) { toast('File non riconosciuto: usa l\'export CSV di Splitwise o Tricount'); return; }
+    if (!res.expenses.length) { toast(t("File non riconosciuto: usa l'export CSV di Splitwise o Tricount")); return; }
     setImporting(res);
   }
   async function runImport() {
@@ -84,7 +84,7 @@ export default function Group() {
         });
         if (error) throw error;
       }
-      toast(`Importate ${importing.expenses.length} spese`);
+      toast(tf('Importate {n} spese', { n: importing.expenses.length }));
       setImporting(null); refresh();
     } catch (e) { toast(errorText(e)); }
     finally { setBusy(false); }
@@ -98,29 +98,29 @@ export default function Group() {
       </header>
 
       <section className="card row" style={{ alignItems: 'center', gap: 16 }}>
-        {qr ? <img src={qr} alt={`QR code per entrare nel viaggio, codice ${b.trip.invite_code}`} className="qr" /> : <span className="qr" />}
+        {qr ? <img src={qr} alt={tf('QR code per entrare nel viaggio, codice {codice}', { codice: b.trip.invite_code })} className="qr" /> : <span className="qr" />}
         <div className="col grow" style={{ gap: 8, minWidth: 0 }}>
           <span className="strong">{t('Invita con link o QR')}</span>
-          <span className="small muted" style={{ overflowWrap: 'anywhere' }}>Codice <strong style={{ color: 'var(--ink)', letterSpacing: 1 }}>{b.trip.invite_code}</strong></span>
+          <span className="small muted" style={{ overflowWrap: 'anywhere' }}>{t("Codice")} <strong style={{ color: 'var(--ink)', letterSpacing: 1 }}>{b.trip.invite_code}</strong></span>
           <button className="btn btn-teal" style={{ minHeight: 44 }} onClick={() => { navigator.clipboard.writeText(link); toast(t('Copiato')); }}>{t('Copia link')}</button>
           <div className="row" style={{ gap: 8 }}>
-            <a className="btn btn-ghost grow" style={{ minHeight: 44, padding: '0 10px' }} href={whatsappLink(`Entra nel viaggio "${b.trip.name}": ${link}`)} target="_blank" rel="noreferrer">WhatsApp</a>
-            {'share' in navigator && <button className="icon-btn" aria-label="Condividi il link" onClick={() => navigator.share({ title: b.trip.name, url: link })}><Icon name="share" size={18} /></button>}
+            <a className="btn btn-ghost grow" style={{ minHeight: 44, padding: '0 10px' }} href={whatsappLink(tf('Entra nel viaggio "{viaggio}": {link}', { viaggio: b.trip.name, link }))} target="_blank" rel="noreferrer">{t("WhatsApp")}</a>
+            {'share' in navigator && <button className="icon-btn" aria-label={t("Condividi il link")} onClick={() => navigator.share({ title: b.trip.name, url: link })}><Icon name="share" size={18} /></button>}
           </div>
         </div>
       </section>
-      {isOrg && <button className="btn btn-ghost" style={{ alignSelf: 'flex-start', minHeight: 36, fontSize: 13 }} onClick={rotate}>Rigenera codice d'invito</button>}
+      {isOrg && <button className="btn btn-ghost" style={{ alignSelf: 'flex-start', minHeight: 36, fontSize: 13 }} onClick={rotate}>{t("Rigenera codice d'invito")}</button>}
 
       <section className="stack">
-        <h2 className="eyebrow">{b.members.length} {t('persone')} nel viaggio</h2>
+        <h2 className="eyebrow">{b.members.length} {t('persone')} {t("nel viaggio")}</h2>
         <ul className="list">
           {b.members.map((m) => (
             <li key={m.id}>
               <Avatar m={m} large />
-              <span className="col grow"><span>{m.display_name}{m.id === b.me?.id ? ' (tu)' : ''}</span>
+              <span className="col grow"><span>{m.display_name}{m.id === b.me?.id ? ` (${t('tu')})` : ''}</span>
                 <span className="tiny muted">{m.role === 'organizer' ? t('Organizzatore') : m.role === 'guest' ? t('Ospite · senza account') : t('Membro')}</span></span>
-              {m.role === 'guest' && <a className="btn btn-ghost" style={{ minHeight: 36, fontSize: 13, padding: '0 12px' }} href={whatsappLink(`Ciao ${m.display_name}! Entra nel viaggio "${b.trip.name}" e scegli "sono ${m.display_name}": ${link}`)} target="_blank" rel="noreferrer">Invia link</a>}
-              {isOrg && m.id !== b.me?.id && <button className="icon-btn" aria-label={`Rimuovi ${m.display_name}`} onClick={() => removeMember(m.id, m.display_name)}><Icon name="close" size={16} /></button>}
+              {m.role === 'guest' && <a className="btn btn-ghost" style={{ minHeight: 36, fontSize: 13, padding: '0 12px' }} href={whatsappLink(tf('Ciao {nome}! Entra nel viaggio "{viaggio}" e scegli "sono {nome}": {link}', { nome: m.display_name, viaggio: b.trip.name, link }))} target="_blank" rel="noreferrer">{t("Invia link")}</a>}
+              {isOrg && m.id !== b.me?.id && <button className="icon-btn" aria-label={tf('Rimuovi {nome}', { nome: m.display_name })} onClick={() => removeMember(m.id, m.display_name)}><Icon name="close" size={16} /></button>}
             </li>
           ))}
         </ul>
@@ -128,25 +128,25 @@ export default function Group() {
 
       <form className="field" onSubmit={addGuest}>
         <label htmlFor="guest">{t('Aggiungi un ospite senza account (solo per le spese)')}</label>
-        <div className="row"><input id="guest" className="input" value={guest} onChange={(e) => setGuest(e.target.value)} placeholder="Nome, es. Luca" maxLength={60} />
+        <div className="row"><input id="guest" className="input" value={guest} onChange={(e) => setGuest(e.target.value)} placeholder={t("Nome, es. Luca")} maxLength={60} />
           <button className="btn btn-primary" disabled={!guest.trim()}>{t('Aggiungi')}</button></div>
       </form>
 
       <section className="stack">
-        <h2 className="eyebrow">Strumenti</h2>
+        <h2 className="eyebrow">{t("Strumenti")}</h2>
         <label className="linkcard" style={{ position: 'relative' }}>
           <span className="icon-tile" style={{ background: 'var(--orange-soft)', color: 'var(--orange)' }}><Icon name="upload" /></span>
-          <span className="col grow"><span className="strong">{t('Importa da Splitwise o Tricount')}</span><span className="tiny muted">Carica il file CSV esportato dall'altra app</span></span>
+          <span className="col grow"><span className="strong">{t('Importa da Splitwise o Tricount')}</span><span className="tiny muted">{t("Carica il file CSV esportato dall'altra app")}</span></span>
           <input type="file" accept=".csv,text/csv" style={{ position: 'absolute', opacity: 0, inset: 0, cursor: 'pointer' }} onChange={(e) => onImportFile(e.target.files?.[0])} />
         </label>
-        <button className="btn btn-ghost" onClick={leave}>Esci dal viaggio</button>
-        {isOrg && <button className="btn btn-danger" onClick={deleteTrip}><Icon name="trash" size={18} />Elimina viaggio</button>}
+        <button className="btn btn-ghost" onClick={leave}>{t("Esci dal viaggio")}</button>
+        {isOrg && <button className="btn btn-danger" onClick={deleteTrip}><Icon name="trash" size={18} />{t("Elimina viaggio")}</button>}
       </section>
 
       {importing && (
-        <Sheet title="Importa spese" onClose={() => setImporting(null)}>
-          <p className="small">Trovate <strong>{importing.expenses.length} spese</strong> da {importing.source === 'splitwise' ? 'Splitwise' : 'Tricount'}, per un totale di {money(importing.expenses.reduce((a, e) => a + e.amount, 0), importing.expenses[0]?.currency || 'EUR')}.</p>
-          <p className="small">Persone: {importing.people.join(', ')}. Chi non è già nel gruppo viene aggiunto come ospite.</p>
+        <Sheet title={t("Importa spese")} onClose={() => setImporting(null)}>
+          <p className="small">{t("Trovate")} <strong>{importing.expenses.length} {t("spese")}</strong> {t("da")} {importing.source === 'splitwise' ? 'Splitwise' : 'Tricount'}{t(", per un totale di")} {money(importing.expenses.reduce((a, e) => a + e.amount, 0), importing.expenses[0]?.currency || 'EUR')}.</p>
+          <p className="small">{t("Persone:")} {importing.people.join(', ')}{t(". Chi non è già nel gruppo viene aggiunto come ospite.")}</p>
           <button className="btn btn-teal btn-block" onClick={runImport} disabled={busy}>{busy ? 'Importazione…' : 'Importa'}</button>
         </Sheet>
       )}

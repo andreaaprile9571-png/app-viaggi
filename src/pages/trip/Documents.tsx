@@ -25,12 +25,12 @@ export default function Documents() {
         <p className="small muted">{b.trip.name}</p>
         <h1 className="display" style={{ fontSize: 30 }}>{t('Documenti')}</h1>
       </header>
-      <div className="segmented" role="group" aria-label="Filtro documenti">
+      <div className="segmented" role="group" aria-label={t("Filtro documenti")}>
         <button aria-pressed={!mine} onClick={() => setMine(false)}>{t('Tutti')}</button>
         <button aria-pressed={mine} onClick={() => setMine(true)}>{t('Solo i miei')}</button>
       </div>
       <OfflineBanner stale={stale} queued={queued} />
-      <div className="banner teal"><Icon name="cloud-check" size={18} /><span>I documenti dei prossimi 7 giorni e quelli assegnati a te si salvano sul telefono.</span></div>
+      <div className="banner teal"><Icon name="cloud-check" size={18} /><span>{t("I documenti dei prossimi 7 giorni e quelli assegnati a te si salvano sul telefono.")}</span></div>
 
       <ul className="stack" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
         {DOC_CATEGORIES.map((c) => {
@@ -44,7 +44,7 @@ export default function Documents() {
                 <span className="col grow">
                   <span className="strong">{t(c.label)}</span>
                   <span className="small muted ellipsis">
-                    {c.id === 'personali' ? <><Icon name="lock" size={12} /> Puoi renderli privati</> : first ? `${first.title}${first.starts_at ? ' · ' + dateShort(first.starts_at) : ''}` : 'Nessun documento'}
+                    {c.id === 'personali' ? <><Icon name="lock" size={12} /> {t("Puoi renderli privati")}</> : first ? `${first.title}${first.starts_at ? ' · ' + dateShort(first.starts_at) : ''}` : t('Nessun documento')}
                   </span>
                 </span>
                 <span className="strong muted">{docs.length}</span>

@@ -40,10 +40,10 @@ export default function NewTripForm({ name }: { name: string }) {
 
   return (
     <form className="stack" onSubmit={create}>
-      <div className="field"><label htmlFor="t-name">Nome del viaggio</label>
-        <input id="t-name" className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="es. Lisbona & Porto" maxLength={120} required /></div>
+      <div className="field"><label htmlFor="t-name">{t("Nome del viaggio")}</label>
+        <input id="t-name" className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("es. Lisbona & Porto")} maxLength={120} required /></div>
       <div className="field" style={{ position: 'relative' }}><label htmlFor="t-dest">{t('Destinazione')}</label>
-        <input id="t-dest" className="input" value={dest} onChange={(e) => { setDest(e.target.value); setPlace(null); }} placeholder="Città o luogo" autoComplete="off" />
+        <input id="t-dest" className="input" value={dest} onChange={(e) => { setDest(e.target.value); setPlace(null); }} placeholder={t("Città o luogo")} autoComplete="off" />
         {!place && options.length > 0 && (
           <ul className="list" style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 5, boxShadow: 'var(--shadow)', marginTop: 4 }}>
             {options.map((o) => (
@@ -58,10 +58,10 @@ export default function NewTripForm({ name }: { name: string }) {
         <div className="field grow"><label htmlFor="t-start">{t('Dal')}</label><input id="t-start" className="input" type="date" value={start} onChange={(e) => setStart(e.target.value)} /></div>
         <div className="field grow"><label htmlFor="t-end">{t('Al')}</label><input id="t-end" className="input" type="date" value={end} min={start} onChange={(e) => setEnd(e.target.value)} /></div>
       </div>
-      <div className="field"><label htmlFor="t-cur">{t('Valuta')} del viaggio</label>
+      <div className="field"><label htmlFor="t-cur">{t('Valuta')} {t("del viaggio")}</label>
         <select id="t-cur" className="input" value={currency} onChange={(e) => setCurrency(e.target.value)}>{CURRENCIES.map((c) => <option key={c}>{c}</option>)}</select></div>
-      <div className="field"><span className="label">Colore della copertina</span>
-        <div className="row" role="group" aria-label="Colore">{COLORS.map((c) => (
+      <div className="field"><span className="label">{t("Colore della copertina")}</span>
+        <div className="row" role="group" aria-label={t("Colore")}>{COLORS.map((c) => (
           <button key={c} type="button" aria-label={c} aria-pressed={color === c} onClick={() => setColor(c)}
             style={{ width: 40, height: 40, borderRadius: 20, background: c, border: color === c ? '3px solid #fff' : 'none', boxShadow: color === c ? `0 0 0 2px ${c}` : 'none', cursor: 'pointer' }} />
         ))}</div></div>

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Avatar, Icon, Switch, toast } from '../../components/ui';
 import { pairwiseTransfers, simplifiedTransfers } from '../../lib/balances';
 import { money } from '../../lib/format';
-import { t } from '../../lib/i18n';
+import { t, tf } from '../../lib/i18n';
 import { exportCsv, exportXlsx } from '../../lib/importexport';
 import { paypalLink, whatsappLink } from '../../lib/integrations';
 import { useTrip } from '../../lib/TripContext';
@@ -23,21 +23,21 @@ export default function Balances() {
     const { error } = await supabase.from('settlements').insert({ trip_id: b.trip.id, from_member: from, to_member: to, amount_base: amount, created_by: b.me?.id });
     if (error) { toast(error.message); return; }
     await supabase.from('activity').insert({ trip_id: b.trip.id, member_id: b.me?.id, kind: 'settlement', text: `ha segnato pagato: ${memberName(from)} → ${memberName(to)} · ${money(amount, cur)}` });
-    toast('Pagamento registrato');
+    toast(t("Pagamento registrato"));
     refresh();
   }
   async function undo(id: string) { await supabase.from('settlements').delete().eq('id', id); refresh(); }
   async function setSimplify(v: boolean) {
-    if (b.me?.role !== 'organizer') { toast('Solo l\'organizzatore può cambiarlo'); return; }
+    if (b.me?.role !== 'organizer') { toast(t("Solo l'organizzatore può cambiarlo")); return; }
     await supabase.from('trips').update({ simplify_debts: v }).eq('id', b.trip.id); refresh();
   }
 
-  const summary = [`Saldi di "${b.trip.name}":`, ...transfers.map((x) => `• ${memberName(x.from)} → ${memberName(x.to)}: ${money(x.amount, cur)}`)].join('\n');
+  const summary = [tf('Saldi di "{viaggio}":', { viaggio: b.trip.name }), ...transfers.map((x) => `• ${memberName(x.from)} → ${memberName(x.to)}: ${money(x.amount, cur)}`)].join('\n');
 
   return (
     <div className="screen no-tabs">
       <header className="row">
-        <Link to=".." relative="path" className="icon-btn" aria-label="Torna alle spese"><Icon name="back" /></Link>
+        <Link to=".." relative="path" className="icon-btn" aria-label={t("Torna alle spese")}><Icon name="back" /></Link>
         <h1 className="display" style={{ fontSize: 28 }}>{t('Saldi')}</h1>
       </header>
 
@@ -64,40 +64,40 @@ export default function Balances() {
 
       <section className="card row">
         <span className="col grow"><label htmlFor="simp" className="strong small">{t('Semplifica le spese')}</label>
-          <span className="tiny muted">{simplify ? 'Calcolo automatico: chi deve dare paga direttamente chi deve ricevere' : 'Disattivo: un rimborso per ogni debito tra due persone'}</span></span>
+          <span className="tiny muted">{simplify ? t('Calcolo automatico: chi deve dare paga direttamente chi deve ricevere') : t('Disattivo: un rimborso per ogni debito tra due persone')}</span></span>
         <Switch id="simp" checked={simplify} onChange={setSimplify} />
       </section>
 
       <section className="stack">
-        <div className="between"><h2 className="eyebrow">{t('Per pareggiare i conti')}</h2><span className="tiny muted">{transfers.length ? `${transfers.length} pagamenti da fare` : t('Tutto saldato')}</span></div>
+        <div className="between"><h2 className="eyebrow">{t('Per pareggiare i conti')}</h2><span className="tiny muted">{transfers.length ? tf('{n} pagamenti da fare', { n: transfers.length }) : t('Tutto saldato')}</span></div>
         <ul className="list">
           {transfers.map((x) => {
             const p = profileOf(x.to);
             return (
               <li key={`${x.from}-${x.to}`} style={{ flexWrap: 'wrap' }}>
-                <span className="grow"><strong>{x.from === b.me?.id ? 'Tu' : memberName(x.from)}</strong> {t('dà a')} <strong>{x.to === b.me?.id ? 'te' : memberName(x.to)}</strong></span>
+                <span className="grow"><strong>{x.from === b.me?.id ? t('Tu') : memberName(x.from)}</strong> {x.from === b.me?.id ? t('dai a') : t('dà a')} <strong>{x.to === b.me?.id ? t('te') : memberName(x.to)}</strong></span>
                 <span className="display" style={{ fontSize: 18 }}>{money(x.amount, cur)}</span>
                 <span className="row" style={{ width: '100%', gap: 8 }}>
-                  {x.from === b.me?.id && p?.paypal_me && <a className="btn btn-ghost" style={{ minHeight: 40 }} href={paypalLink(p.paypal_me, x.amount, cur)} target="_blank" rel="noreferrer">PayPal</a>}
-                  {x.from === b.me?.id && p?.iban && <button className="btn btn-ghost" style={{ minHeight: 40 }} onClick={() => { navigator.clipboard.writeText(p.iban!); toast('IBAN copiato'); }}>{t('Copia IBAN')}</button>}
+                  {x.from === b.me?.id && p?.paypal_me && <a className="btn btn-ghost" style={{ minHeight: 40 }} href={paypalLink(p.paypal_me, x.amount, cur)} target="_blank" rel="noreferrer">{t("PayPal")}</a>}
+                  {x.from === b.me?.id && p?.iban && <button className="btn btn-ghost" style={{ minHeight: 40 }} onClick={() => { navigator.clipboard.writeText(p.iban!); toast(t("IBAN copiato")); }}>{t('Copia IBAN')}</button>}
                   <button className="btn btn-teal grow" style={{ minHeight: 40 }} onClick={() => markPaid(x.from, x.to, x.amount)}><Icon name="check" size={16} />{t('Segna come pagato')}</button>
                 </span>
               </li>
             );
           })}
-          {!transfers.length && <li className="small muted">Nessun pagamento da fare.</li>}
+          {!transfers.length && <li className="small muted">{t("Nessun pagamento da fare.")}</li>}
         </ul>
       </section>
 
       {!!b.settlements.length && (
         <section className="stack">
-          <h2 className="eyebrow">Pagamenti registrati</h2>
+          <h2 className="eyebrow">{t("Pagamenti registrati")}</h2>
           <ul className="list">
             {[...b.settlements].reverse().map((s) => (
               <li key={s.id}><Icon name="check" size={18} className="muted" />
                 <span className="grow small">{memberName(s.from_member)} → {memberName(s.to_member)}</span>
                 <span className="small strong">{money(s.amount_base, cur)}</span>
-                <button className="btn btn-ghost" style={{ minHeight: 36, padding: '0 10px', fontSize: 13 }} onClick={() => undo(s.id)}>Annulla</button></li>
+                <button className="btn btn-ghost" style={{ minHeight: 36, padding: '0 10px', fontSize: 13 }} onClick={() => undo(s.id)}>{t("Annulla")}</button></li>
             ))}
           </ul>
         </section>
@@ -109,7 +109,7 @@ export default function Balances() {
           <button className="btn btn-ghost grow" onClick={() => exportCsv(b)}><Icon name="download" size={18} />{t('Esporta CSV')}</button>
           <button className="btn btn-ghost grow" onClick={() => exportXlsx(b, b.members.map((m) => ({ Persona: m.display_name, Saldo: balances[m.id] ?? 0 })))}><Icon name="download" size={18} />{t('Esporta Excel')}</button>
         </div>
-        <p className="tiny muted">Il file Excel si apre anche in Google Sheets (File › Importa).</p>
+        <p className="tiny muted">{t("Il file Excel si apre anche in Google Sheets (File › Importa).")}</p>
       </div>
     </div>
   );

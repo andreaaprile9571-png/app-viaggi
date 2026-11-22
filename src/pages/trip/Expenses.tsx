@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Icon, OfflineBanner, Sheet, Switch, TabBar, toast } from '../../components/ui';
 import { pairwiseTransfers, simplifiedTransfers } from '../../lib/balances';
 import { dateLong, errorText, EXPENSE_CATEGORIES, money } from '../../lib/format';
-import { t } from '../../lib/i18n';
+import { t, tf } from '../../lib/i18n';
 import { useTrip } from '../../lib/TripContext';
 import { supabase } from '../../lib/supabase';
 
@@ -48,7 +48,7 @@ export default function Expenses() {
   }, [list]);
 
   async function setSimplify(v: boolean) {
-    if (me?.role !== 'organizer') { alert('Solo l\'organizzatore può cambiare questa impostazione per il gruppo.'); return; }
+    if (me?.role !== 'organizer') { alert(t("Solo l'organizzatore può cambiare questa impostazione per il gruppo.")); return; }
     await supabase.from('trips').update({ simplify_debts: v }).eq('id', b.trip.id);
     refresh();
   }
@@ -82,7 +82,7 @@ export default function Expenses() {
         )}
         <div className="row">
           <span className="col grow"><label htmlFor="simp" className="small strong">{t('Semplifica le spese')}</label>
-            <span className="tiny" style={{ color: '#B5AC98' }}>{simplify ? `Calcolo automatico: ${nTransfers} pagamenti per pareggiare` : `Disattivo: ${nTransfers} rimborsi, uno per ogni debito`}</span></span>
+            <span className="tiny" style={{ color: '#B5AC98' }}>{simplify ? tf('Calcolo automatico: {n} pagamenti per pareggiare', { n: nTransfers }) : tf('Disattivo: {n} rimborsi, uno per ogni debito', { n: nTransfers })}</span></span>
           <Switch id="simp" checked={simplify} onChange={setSimplify} />
         </div>
       </section>
@@ -109,7 +109,7 @@ export default function Expenses() {
                   <button className="linkcard" style={{ padding: '12px 0' }} onClick={() => nav(`nuova?id=${e.id}`)}>
                     <span className="icon-tile" style={{ width: 40, height: 40, borderRadius: 12, background: c.bg, color: c.fg, fontWeight: 700 }}>{e.title.charAt(0).toUpperCase()}</span>
                     <span className="col grow" style={{ gap: 2 }}>
-                      <span className="row strong" style={{ gap: 6 }}><span className="ellipsis">{e.title}</span>{e.receipt_path && <Icon name="receipt" size={14} label="Scontrino allegato" className="muted" />}</span>
+                      <span className="row strong" style={{ gap: 6 }}><span className="ellipsis">{e.title}</span>{e.receipt_path && <Icon name="receipt" size={14} label={t("Scontrino allegato")} className="muted" />}</span>
                       <span className="tiny muted">{t('Pagato da')} {memberName(e.paid_by)} · {t('La tua quota').toLowerCase()} {money(mine, cur)}</span>
                     </span>
                     <span className="col" style={{ alignItems: 'flex-end' }}>

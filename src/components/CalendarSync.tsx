@@ -51,7 +51,7 @@ export default function CalendarSync({ token, tripName }: { token: string; tripN
         ) : (
           <a className="btn btn-teal grow" href={webcalUrl}><Icon name="calendar" size={18} />{isIOS ? t('Aggiungi a Calendario') : 'Apple / Outlook'}</a>
         )}
-        {!isMobile && <a className="btn btn-ghost grow" href={googleUrl} target="_blank" rel="noreferrer">Google Calendar</a>}
+        {!isMobile && <a className="btn btn-ghost grow" href={googleUrl} target="_blank" rel="noreferrer">{t("Google Calendar")}</a>}
         <button className="btn btn-ghost grow" onClick={copy}><Icon name="copy" size={16} />{t('Copia link')}</button>
       </div>
       <button className="small" style={{ background: 'none', border: 'none', color: 'var(--teal)', textAlign: 'left', padding: 0, minHeight: 32 }} onClick={() => setHelp((h) => !h)} aria-expanded={help}>

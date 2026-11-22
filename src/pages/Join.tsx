@@ -27,26 +27,26 @@ export default function Join({ name }: { name: string }) {
     nav(`/viaggio/${data}`, { replace: true });
   }
 
-  if (p === undefined) return <div className="screen no-tabs"><p className="muted">Caricamento…</p></div>;
-  if (p === null) return <div className="screen no-tabs"><h1 className="display" style={{ fontSize: 26 }}>Invito non valido</h1><p className="muted">Il codice {code} non esiste o è stato rigenerato dall'organizzatore.</p></div>;
+  if (p === undefined) return <div className="screen no-tabs"><p className="muted">{t("Caricamento…")}</p></div>;
+  if (p === null) return <div className="screen no-tabs"><h1 className="display" style={{ fontSize: 26 }}>{t("Invito non valido")}</h1><p className="muted">{t("Il codice")} {code} {t("non esiste o è stato rigenerato dall'organizzatore.")}</p></div>;
 
   return (
     <div className="screen no-tabs">
-      <p className="eyebrow">Sei stato invitato</p>
+      <p className="eyebrow">{t("Sei stato invitato")}</p>
       <div className="card stack" style={{ background: 'var(--teal)', color: '#fff', padding: 20 }}>
         <h1 className="display" style={{ fontSize: 28 }}>{p.name}</h1>
         <p className="small" style={{ opacity: .9 }}>{[p.destination, range(p.start_date, p.end_date)].filter(Boolean).join(' · ')}</p>
-        <p className="small" style={{ opacity: .9 }}>{p.members_count} {t('persone')} nel gruppo</p>
+        <p className="small" style={{ opacity: .9 }}>{p.members_count} {t('persone')} {t("nel gruppo")}</p>
       </div>
       {guests.length > 0 && (
-        <div className="field"><label htmlFor="guest">Sei già nella lista come ospite?</label>
+        <div className="field"><label htmlFor="guest">{t("Sei già nella lista come ospite?")}</label>
           <select id="guest" className="input" value={asGuest} onChange={(e) => setAsGuest(e.target.value)}>
-            <option value="">No, entro come nuovo membro</option>
-            {guests.map((g) => <option key={g.member_id} value={g.member_id}>Sì, sono {g.display_name}</option>)}
+            <option value="">{t("No, entro come nuovo membro")}</option>
+            {guests.map((g) => <option key={g.member_id} value={g.member_id}>{t("Sì, sono")} {g.display_name}</option>)}
           </select></div>
       )}
       {!asGuest && (
-        <div className="field"><label htmlFor="disp">Come ti chiameranno nel gruppo</label>
+        <div className="field"><label htmlFor="disp">{t("Come ti chiameranno nel gruppo")}</label>
           <input id="disp" className="input" value={display} onChange={(e) => setDisplay(e.target.value)} maxLength={60} /></div>
       )}
       {err && <p className="error">{err}</p>}

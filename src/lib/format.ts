@@ -1,4 +1,4 @@
-import { getLang } from './i18n';
+import { getLang, t } from './i18n';
 import type { DocCategory, ExpenseCategory } from './supabase';
 
 const locale = () => (getLang() === 'en' ? 'en-GB' : 'it-IT');
@@ -65,10 +65,10 @@ export function errorText(e: unknown): string {
     const o = e as { message?: unknown; error_description?: unknown; error?: unknown; details?: unknown };
     const m = o.message ?? o.error_description ?? o.error ?? o.details;
     if (typeof m === 'string' && m) {
-      if (/row-level security/i.test(m)) return 'Non hai i permessi per questa operazione. Ricarica la pagina e riprova.';
-      if (/failed to fetch|network/i.test(m)) return 'Connessione assente. Riprova quando sei online.';
+      if (/row-level security/i.test(m)) return t('Non hai i permessi per questa operazione. Ricarica la pagina e riprova.');
+      if (/failed to fetch|network/i.test(m)) return t('Connessione assente. Riprova quando sei online.');
       return m;
     }
   }
-  return typeof e === 'string' ? e : 'Errore imprevisto. Riprova.';
+  return typeof e === 'string' ? e : t('Errore imprevisto. Riprova.');
 }

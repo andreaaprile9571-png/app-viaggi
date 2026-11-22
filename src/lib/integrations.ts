@@ -1,3 +1,4 @@
+import { t } from './i18n';
 // Integrazioni gratuite senza account: geocoding e meteo (Open-Meteo), tassi BCE (Frankfurter).
 import { get, set } from 'idb-keyval';
 
@@ -29,12 +30,12 @@ export async function weather(lat: number, lon: number): Promise<DayWeather[]> {
 }
 
 export function weatherLabel(code: number): { icon: string; text: string } {
-  if (code === 0) return { icon: 'sun', text: 'Sereno' };
-  if (code <= 3) return { icon: 'cloud-sun', text: 'Poco nuvoloso' };
-  if (code <= 48) return { icon: 'cloud', text: 'Nebbia' };
-  if (code <= 67 || (code >= 80 && code <= 82)) return { icon: 'rain', text: 'Pioggia' };
-  if (code <= 77 || code === 85 || code === 86) return { icon: 'snow', text: 'Neve' };
-  return { icon: 'storm', text: 'Temporale' };
+  if (code === 0) return { icon: 'sun', text: t('Sereno') };
+  if (code <= 3) return { icon: 'cloud-sun', text: t('Poco nuvoloso') };
+  if (code <= 48) return { icon: 'cloud', text: t('Nebbia') };
+  if (code <= 67 || (code >= 80 && code <= 82)) return { icon: 'rain', text: t('Pioggia') };
+  if (code <= 77 || code === 85 || code === 86) return { icon: 'snow', text: t('Neve') };
+  return { icon: 'storm', text: t('Temporale') };
 }
 
 /** Tasso di cambio di riferimento BCE: quante unità di `to` vale 1 unità di `from`. */

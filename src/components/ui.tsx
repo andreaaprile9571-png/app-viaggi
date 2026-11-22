@@ -164,7 +164,7 @@ export function Logo({ size = 28, sail = 'var(--teal)', jib = 'var(--orange)', w
   return (
     <span className="row" style={{ gap: 8 }}>
       {mark}
-      <span className="display" style={{ fontSize: Math.round(size * 0.8), color: 'var(--ink)' }}>Evenkeel</span>
+      <span className="display" style={{ fontSize: Math.round(size * 0.8), color: 'var(--ink)' }}>{t("Evenkeel")}</span>
     </span>
   );
 }

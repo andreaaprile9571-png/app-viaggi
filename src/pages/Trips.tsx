@@ -38,12 +38,12 @@ export default function Trips({ name }: { name: string }) {
       </header>
 
       {err && <p className="error">{err}</p>}
-      {!data && !err && <p className="muted">Caricamento…</p>}
+      {!data && !err && <p className="muted">{t("Caricamento…")}</p>}
 
       {data && !data.trips.length && (
         <div className="card stack" style={{ padding: 24 }}>
-          <h2 className="display" style={{ fontSize: 22 }}>Il primo viaggio parte da qui</h2>
-          <p className="muted">Crea un viaggio e invita il gruppo, oppure entra con il codice che ti hanno mandato.</p>
+          <h2 className="display" style={{ fontSize: 22 }}>{t("Il primo viaggio parte da qui")}</h2>
+          <p className="muted">{t("Crea un viaggio e invita il gruppo, oppure entra con il codice che ti hanno mandato.")}</p>
         </div>
       )}
 
@@ -53,7 +53,7 @@ export default function Trips({ name }: { name: string }) {
           <Link to={`/viaggio/${tr.id}`} className="card" style={{ padding: 0, overflow: 'hidden', textDecoration: 'none', color: 'inherit', boxShadow: 'var(--shadow)' }}>
             <div style={{ background: tr.cover_color, color: '#fff', padding: 20, minHeight: 132, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 6, position: 'relative' }}>
               {d !== null && <span className="pill" style={{ position: 'absolute', top: 16, left: 20, background: 'rgba(255,255,255,.18)', color: '#fff' }}>
-                {d > 0 ? `Prossimo · tra ${d} giorni` : d === 0 ? 'Si parte oggi' : t('In corso')}</span>}
+                {d > 0 ? `Prossimo · tra ${d} giorni` : d === 0 ? t('Si parte oggi') : t('In corso')}</span>}
               <h2 className="display" style={{ fontSize: 28 }}>{tr.name}</h2>
               <p className="small" style={{ opacity: .9 }}>{range(tr.start_date, tr.end_date)}</p>
             </div>
@@ -93,7 +93,7 @@ export default function Trips({ name }: { name: string }) {
         <Sheet title={t('Entra con un codice')} onClose={() => setSheet(null)}>
           <form className="stack" onSubmit={(e) => { e.preventDefault(); if (code.trim()) nav(`/j/${code.trim().toUpperCase()}`); }}>
             <div className="field"><label htmlFor="code">{t('Codice invito')}</label>
-              <input id="code" className="input" value={code} onChange={(e) => setCode(e.target.value)} placeholder="es. 4K9A2B7C" autoCapitalize="characters" /></div>
+              <input id="code" className="input" value={code} onChange={(e) => setCode(e.target.value)} placeholder={t("es. 4K9A2B7C")} autoCapitalize="characters" /></div>
             <button className="btn btn-primary btn-block" disabled={!code.trim()}>{t('Entra nel viaggio')}</button>
           </form>
         </Sheet>

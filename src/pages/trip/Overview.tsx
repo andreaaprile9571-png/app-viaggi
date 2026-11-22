@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, DOC_ICON, Icon, OfflineBanner, TabBar } from '../../components/ui';
 import { dateShort, dateTime, DOC_CATEGORIES, money, range, relTime } from '../../lib/format';
-import { t } from '../../lib/i18n';
+import { activityText, t } from '../../lib/i18n';
 import { weather, weatherLabel, type DayWeather } from '../../lib/integrations';
 import { useTrip } from '../../lib/TripContext';
 import CalendarSync from '../../components/CalendarSync';
@@ -35,7 +35,7 @@ export default function Overview() {
     <div className="screen flush-top">
       <div className="hero" style={{ background: trip.cover_color }}>
         <div className="between">
-          <Link to="/" className="icon-btn on-dark" aria-label="Torna ai viaggi"><Icon name="back" /></Link>
+          <Link to="/" className="icon-btn on-dark" aria-label={t("Torna ai viaggi")}><Icon name="back" /></Link>
           <Link to="gruppo" className="btn" style={{ background: '#fff', color: trip.cover_color, minHeight: 44, borderRadius: 22, fontSize: 14 }}><Icon name="user-plus" size={18} />{t('Invita')}</Link>
         </div>
         <div className="col">
@@ -57,7 +57,7 @@ export default function Overview() {
             </div>
           </Link>
         ) : (
-          <Link to="documenti" className="card small muted" style={{ textDecoration: 'none' }}>Nessun documento con data in arrivo. Aggiungi biglietti e prenotazioni →</Link>
+          <Link to="documenti" className="card small muted" style={{ textDecoration: 'none' }}>{t("Nessun documento con data in arrivo. Aggiungi biglietti e prenotazioni →")}</Link>
         )}
       </section>
 
@@ -111,12 +111,12 @@ export default function Overview() {
             return (
               <li key={a.id}>
                 {m ? <Avatar m={m} /> : <span className="avatar" style={{ background: '#C8BFAC' }}>?</span>}
-                <span className="grow small"><strong>{memberName(a.member_id)}</strong> {a.text}</span>
+                <span className="grow small"><strong>{memberName(a.member_id)}</strong> {activityText(a.text)}</span>
                 <span className="tiny muted">{relTime(a.created_at)}</span>
               </li>
             );
           })}
-          {!b.activity.length && <li className="small muted">Ancora nessuna attività.</li>}
+          {!b.activity.length && <li className="small muted">{t("Ancora nessuna attività.")}</li>}
         </ul>
       </section>
       <TabBar />

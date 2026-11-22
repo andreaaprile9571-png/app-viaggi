@@ -47,7 +47,7 @@ export default function ExpenseForm() {
   useEffect(() => {
     if (currency === tripCur) { setRate(1); return; }
     if (editing && editing.currency === currency) return;
-    fxRate(currency, tripCur, day).then(setRate).catch(() => setErr('Tasso di cambio non disponibile offline: inserisci la spesa nella valuta del viaggio.'));
+    fxRate(currency, tripCur, day).then(setRate).catch(() => setErr(t('Tasso di cambio non disponibile offline: inserisci la spesa nella valuta del viaggio.')));
   }, [currency, tripCur, day, editing]);
 
   const shares = useMemo(() => {
@@ -73,7 +73,7 @@ export default function ExpenseForm() {
       setOcr({ progress: 1, done: true, merchant: g.merchant });
     } catch {
       setOcr(null);
-      toast('Non sono riuscito a leggere lo scontrino: inserisci i dati a mano');
+      toast(t("Non sono riuscito a leggere lo scontrino: inserisci i dati a mano"));
     }
   }
 
@@ -86,7 +86,7 @@ export default function ExpenseForm() {
         paid_by: paidBy, category, spent_on: day, split_mode: mode, receipt_path: editing?.receipt_path ?? null,
         client_id: editing?.client_id ?? uid(),
       }, included.map((id) => ({ member_id: id, amount_base: shares[id] ?? 0, weight: mode === 'shares' ? parseAmount(custom[id] ?? '1') : null })), receipt);
-      toast(res.queued ? 'Spesa salvata sul telefono: la invio appena torni online' : 'Spesa salvata');
+      toast(res.queued ? t('Spesa salvata sul telefono: la invio appena torni online') : t('Spesa salvata'));
       await refresh();
       nav('..', { relative: 'path' });
     } catch (e) { setErr(errorText(e)); }
@@ -94,31 +94,31 @@ export default function ExpenseForm() {
   }
 
   async function remove() {
-    if (!editing || !confirm('Eliminare questa spesa?')) return;
+    if (!editing || !confirm(t("Eliminare questa spesa?"))) return;
     await supabase.from('expenses').delete().eq('id', editing.id);
     await refresh();
     nav('..', { relative: 'path' });
   }
 
-  const name = (id: string) => (id === b.me?.id ? 'Io' : b.members.find((m) => m.id === id)?.display_name ?? '');
+  const name = (id: string) => (id === b.me?.id ? t('Io') : b.members.find((m) => m.id === id)?.display_name ?? '');
 
   return (
     <div className="screen no-tabs">
       <header className="between">
         <Link to=".." relative="path" className="icon-btn" aria-label={t('Chiudi')}><Icon name="close" size={20} /></Link>
-        <h1 style={{ fontSize: 17, fontWeight: 600 }}>{editing ? 'Modifica spesa' : t('Nuova spesa')}</h1>
+        <h1 style={{ fontSize: 17, fontWeight: 600 }}>{editing ? t('Modifica spesa') : t('Nuova spesa')}</h1>
         {editing ? <button className="icon-btn" onClick={remove} aria-label={t('Elimina')}><Icon name="trash" size={20} /></button> : <span style={{ width: 44 }} />}
       </header>
 
       <section className="row" style={{ padding: 12, background: 'var(--bg)', borderRadius: 18, alignItems: 'flex-start' }}>
-        {receiptPreview ? <img src={receiptPreview} alt="Scontrino" className="receipt-thumb" />
+        {receiptPreview ? <img src={receiptPreview} alt={t("Scontrino")} className="receipt-thumb" />
           : <span className="receipt-thumb" style={{ background: 'var(--card)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)' }}><Icon name="receipt" size={30} /></span>}
         <div className="col grow" style={{ gap: 8 }}>
           {ocr && !ocr.done && <><span className="small">{t('Sto leggendo lo scontrino…')}</span><div className="progress"><div style={{ width: `${Math.round(ocr.progress * 100)}%` }} /></div></>}
-          {ocr?.done && <span className="pill teal" style={{ alignSelf: 'flex-start' }}><Icon name="check" size={13} />{t('Letto dallo scontrino')}: controlla i dati</span>}
-          {!ocr && <span className="small muted">Fotografa lo scontrino: leggo totale e data sul telefono, senza inviarlo a nessuno.</span>}
+          {ocr?.done && <span className="pill teal" style={{ alignSelf: 'flex-start' }}><Icon name="check" size={13} />{t('Letto dallo scontrino')}{t(": controlla i dati")}</span>}
+          {!ocr && <span className="small muted">{t("Fotografa lo scontrino: leggo totale e data sul telefono, senza inviarlo a nessuno.")}</span>}
           <label className="btn btn-ghost" style={{ position: 'relative', minHeight: 40, alignSelf: 'flex-start' }}>
-            <Icon name="camera" size={18} />{receipt || receiptPreview ? 'Rifai foto' : t('Scansiona scontrino')}
+            <Icon name="camera" size={18} />{receipt || receiptPreview ? t('Rifai foto') : t('Scansiona scontrino')}
             <input ref={fileRef} type="file" accept="image/*" capture="environment" style={{ position: 'absolute', opacity: 0, inset: 0 }} onChange={(e) => onPhoto(e.target.files?.[0])} />
           </label>
         </div>
@@ -129,12 +129,12 @@ export default function ExpenseForm() {
           <input id="e-amount" inputMode="decimal" value={amountStr} onChange={(e) => setAmountStr(e.target.value)} placeholder="0,00" />
           <select aria-label={t('Valuta')} className="input" style={{ width: 96, minHeight: 40 }} value={currency} onChange={(e) => setCurrency(e.target.value)}>{CURRENCIES.map((c) => <option key={c}>{c}</option>)}</select>
         </div>
-        {currency !== tripCur && amount > 0 && <span className="tiny muted">= {money(amountBase, tripCur)} · tasso BCE {rate.toFixed(4)}</span>}
+        {currency !== tripCur && amount > 0 && <span className="tiny muted">= {money(amountBase, tripCur)} {t("· tasso BCE")} {rate.toFixed(4)}</span>}
       </div>
-      <div className="field"><label htmlFor="e-title">Descrizione</label>
-        <input id="e-title" className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="es. Cena ad Alfama" maxLength={160} /></div>
+      <div className="field"><label htmlFor="e-title">{t("Descrizione")}</label>
+        <input id="e-title" className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("es. Cena ad Alfama")} maxLength={160} /></div>
       <div className="pair">
-        <div className="field"><label htmlFor="e-day">Data</label><input id="e-day" className="input" type="date" value={day} onChange={(e) => setDay(e.target.value)} /></div>
+        <div className="field"><label htmlFor="e-day">{t("Data")}</label><input id="e-day" className="input" type="date" value={day} onChange={(e) => setDay(e.target.value)} /></div>
         <div className="field"><label htmlFor="e-cat">{t('Categoria')}</label>
           <select id="e-cat" className="input" value={category} onChange={(e) => setCategory(e.target.value as ExpenseCategory)}>
             {EXPENSE_CATEGORIES.map((c) => <option key={c.id} value={c.id}>{t(c.label)}</option>)}</select></div>
@@ -147,7 +147,7 @@ export default function ExpenseForm() {
 
       <div className="stack">
         <div className="between"><span className="label">{t('Dividi tra')}</span>
-          <div className="segmented" role="group" aria-label="Modo di divisione" style={{ padding: 3 }}>
+          <div className="segmented" role="group" aria-label={t("Modo di divisione")} style={{ padding: 3 }}>
             {([['equal', 'Uguale'], ['amounts', 'Importi'], ['shares', 'Quote']] as [Mode, string][]).map(([id, l]) => (
               <button key={id} type="button" aria-pressed={mode === id} onClick={() => setMode(id)} style={{ minHeight: 34, padding: '0 12px' }}>{t(l)}</button>
             ))}
@@ -158,17 +158,17 @@ export default function ExpenseForm() {
             return (
               <li key={m.id} style={{ padding: '4px 0' }}>
                 <input type="checkbox" id={`p-${m.id}`} checked={on} onChange={() => setIncluded((x) => (on ? x.filter((i) => i !== m.id) : [...x, m.id]))} style={{ width: 22, height: 22, margin: 0, accentColor: 'var(--teal)' }} />
-                <label htmlFor={`p-${m.id}`} className="grow" style={{ minHeight: 44, display: 'flex', alignItems: 'center' }}>{m.id === b.me?.id ? `${m.display_name} (tu)` : m.display_name}</label>
+                <label htmlFor={`p-${m.id}`} className="grow" style={{ minHeight: 44, display: 'flex', alignItems: 'center' }}>{m.id === b.me?.id ? `${m.display_name} (${t('tu')})` : m.display_name}</label>
                 {on && mode !== 'equal' && (
-                  <input aria-label={`${mode === 'shares' ? 'Quote' : 'Importo'} di ${m.display_name}`} className="input" inputMode="decimal" style={{ width: 84, minHeight: 40, textAlign: 'right' }}
+                  <input aria-label={`${mode === 'shares' ? t('Quote') : t('Importo')}: ${m.display_name}`} className="input" inputMode="decimal" style={{ width: 84, minHeight: 40, textAlign: 'right' }}
                     value={custom[m.id] ?? (mode === 'shares' ? '1' : '')} onChange={(e) => setCustom((c) => ({ ...c, [m.id]: e.target.value }))} />
                 )}
-                <span className={on ? 'strong' : 'small muted'} style={{ minWidth: 74, textAlign: 'right' }}>{on ? money(shares[m.id] ?? 0, tripCur) : 'esclusa/o'}</span>
+                <span className={on ? 'strong' : 'small muted'} style={{ minWidth: 74, textAlign: 'right' }}>{on ? money(shares[m.id] ?? 0, tripCur) : t('esclusa/o')}</span>
               </li>
             );
           })}
         </ul>
-        {mode === 'amounts' && amount > 0 && !sumOk && <p className="tiny" style={{ color: 'var(--orange-dark)' }}>Le quote sommano {money(sharesSum, tripCur)} su {money(amountBase, tripCur)}.</p>}
+        {mode === 'amounts' && amount > 0 && !sumOk && <p className="tiny" style={{ color: 'var(--orange-dark)' }}>{t("Le quote sommano")} {money(sharesSum, tripCur)} {t("su")} {money(amountBase, tripCur)}.</p>}
       </div>
       {err && <p className="error">{err}</p>}
 
