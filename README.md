@@ -1,4 +1,6 @@
-# Viaggi di gruppo
+# Evenkeel
+
+App per viaggi di gruppo: documenti, prenotazioni e spese condivise in un posto solo.
 
 App per gestire documenti, prenotazioni e spese condivise di un viaggio di gruppo.
 Android (APK con Capacitor) e web app installabile su iPhone (PWA).
